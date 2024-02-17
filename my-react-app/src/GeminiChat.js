@@ -3,7 +3,7 @@ import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/ge
 import './GeminiChat.css'
 
 const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = "AIzaSyAluPQEGMxGNfrkW92bg8zGu1bjeGdJ7Us";
+const API_KEY = "";
 
 const GeminiChat = () => {
     const [userInput, setUserInput] = useState('');
