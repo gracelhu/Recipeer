@@ -1,0 +1,15 @@
+.bigger-input {
+     /* Set a minimum width to prevent excessive shrinking */
+  min-width: 100px;
+  /* Allow text to wrap when it exceeds the box width */
+  white-space: pre-wrap;
+  /* Ensure overflow is visible for proper resizing */
+  overflow-wrap: break-word;
+  /* Optional: Adjust padding and font-size for visual consistency */
+  padding: 5px 10px;
+  font-size: 16px;
+  /* Adjust initial height based on your needs */
+  height: 100px;
+  /* Resize vertically based on content height */
+  resize: vertical;
+  }
