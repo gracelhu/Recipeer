@@ -1,2 +1,0 @@
-# Recipeer-
-project for TreeHacks
