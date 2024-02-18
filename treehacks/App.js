@@ -12,8 +12,6 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
 
-  const [response, setResponse] = useState('');
-  
 
   return (
     <NavigationContainer>
