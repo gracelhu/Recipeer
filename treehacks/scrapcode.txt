@@ -1,0 +1,27 @@
+<FlatList
+        data={users}
+        testID="UsersList"
+        renderItem={(x) => {
+          const user = x.item;
+          return (
+	      <View>
+              <Text> {user.username}</Text>
+              <Text> {user.password}</Text>
+              <Text>Ingredients:</Text>
+              <View>
+                <FlatList
+                  data={user.ingredients}
+                  renderItem={({ item }) => <Text key={item}>{item}</Text>}
+                />
+              </View>
+              <Text>Friends:</Text>
+              <View>
+                <FlatList
+                  data={user.usernamesOfFriends}
+                  renderItem={({ item }) => <Text key={item}>{item}</Text>}
+                />
+              </View>
+	      </View>
+          );
+        }}
+      />
