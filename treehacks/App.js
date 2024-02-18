@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ConvexProvider, ConvexReactClient, useConvex} from "convex/react";
+import "react-native-get-random-values";
+import React, { useState } from 'react';
+import { Button, View, Text, TextInput } from 'react-native';
+import { useMutation } from "convex/react";
+import { api } from "./convex/_generated/api";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+const convex = new ConvexReactClient("https://merry-elk-527.convex.cloud", {
+  unsavedChangesWarning: false,
+});
+
+function InnerApp() {
+  const createUser = useMutation(api.tasks.createUser);
+  async function handleCreateUser() {
+    await createUser({username: "meow", password: "caspo", ingredients: ["milk", "butter"], usernamesOfFriends: ["nancylhu", "camiii"]});
+  }
+  return (<View><Button title="Create User" onPress={handleCreateUser}/>
+  <Button title="Create User" onPress={handleCreateUser}/>
+  <Button title="Create User" onPress={handleCreateUser}/></View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+const App = () => {
+  return (
+    <ConvexProvider client={convex}>
+      <InnerApp></InnerApp>
+    </ConvexProvider>
+  );
+};
+
+export default App;
