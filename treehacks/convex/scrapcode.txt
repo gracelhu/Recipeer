@@ -1,0 +1,28 @@
+/*export const getIngredientsOfUser = query(async (ctx, username) => {
+    const users = await ctx.db.query("recipeer").collect();
+    for (const user of users) {
+       if(user.username === username) {
+            return user.ingredients;
+       }
+    }
+    return "no username match";
+  }); */
+
+  /*export const getIngredientsOfUser = query({
+    args: { username: v.string() },
+    handler: (_, args) => {
+      return args.username;
+    },
+  }); */
+
+ /* export const getIngredientsOfUser = query({
+    args: {
+      username: v.string(), // Define the argument for the task name
+    },
+    handler: async (ctx) => {
+      const users = await ctx.db.query("recipeer").collect();
+      matchingUser = "nothing";
+      matchingUser = users.find((user) => user.username === username); // Find the matching task
+      return matchingUser; // Return only the matching task object
+    },
+  }); */

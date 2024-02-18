@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import React, {useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,6 +9,7 @@ import UploadPic from './screens/UploadPic';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
+import Profile from './screens/Profile';
 
 
 
@@ -33,6 +34,7 @@ export default function App() {
     <ConvexProvider client={convex}>
       <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="profile" component={Profile}  initialParams={{ username: "gracelhu"}} />
           <Stack.Screen name="login">
              {(props) => <Login {...props} updateUser={updateUser} />}
             </Stack.Screen>
