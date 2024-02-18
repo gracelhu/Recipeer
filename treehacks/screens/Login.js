@@ -2,24 +2,45 @@ import { View, Text, TextInput, Button, StyleSheet, Pressable} from 'react-nativ
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Formik } from 'formik'; 
 
 function handleSubmit() {
     console.log("hi");
 }
 
-const Login = ({navigation}) => {
+const Login = ({navigation, updateUser}) => {
+
+    const handleLogin = (values) => {
+        console.log(values.username);
+        updateUser(values);
+        navigation.navigate('upload');
+    }
     return (
         <View style={styles.bodyPage}>
             <Text style={styles.titleText}>Get Started</Text>
-            <View >
-                <TextInput style={styles.input} placeholder={"Username"} />
-                <TextInput secureTextEntry={true} style={styles.input} placeholder={"Password"} />
-            </View>
-            <Pressable style={styles.buttonStyle} onPress={() => {
-                navigation.navigate('upload');
+            <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
+             onSubmit={(values) => {
+                handleLogin(values);
             }}>
-                <Text style={styles.text}>Sign up</Text>
-            </Pressable>
+                {({ values, handleSubmit, handleChange, isValid }) => {
+                    return (
+                        <>
+                        <View >
+                        <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
+                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
+                       </View>
+
+                        <Pressable style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
+                            <Text style={styles.text}>Sign up</Text>
+                        </Pressable>
+                        </>
+                    )
+            
+                }}
+           
+            </Formik>
+          
+            
         </View>
     )
 }
