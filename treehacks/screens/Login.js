@@ -17,7 +17,7 @@ const Login = ({navigation, updateUser}) => {
     }
     return (
         <View style={styles.bodyPage}>
-             <Image
+             <Image style={{width: 150, height: 150,}}
         source={require('./img/recipeer_icon.png')}
       />
             <Text style={styles.titleText}>Get Started</Text>
@@ -28,7 +28,7 @@ const Login = ({navigation, updateUser}) => {
                 {({ values, handleSubmit, handleChange, isValid }) => {
                     return (
                         <>
-                        <View >
+                        <View style={{marginBottom: 50,}}>
                         <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
                         <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
                        </View>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     titleText: {
       fontSize: 35,
       fontWeight: 'bold',
-      marginBottom: 50,
+      marginBottom: 40,
 
     },
     bodyPage: {

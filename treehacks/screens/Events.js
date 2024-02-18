@@ -3,7 +3,6 @@ import React from 'react';
 import {getEvents} from '../convex/getters';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { useQuery } from "convex/react";
 import { getIngredients, getFriends} from "../convex/getters"
 
 // const copy1 = `
