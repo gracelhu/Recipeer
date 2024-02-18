@@ -1,22 +1,35 @@
-import { View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import React from 'react';
 import {getEvents} from '../convex/getters';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 
-const Events = () => {
+const Events = ({navigation, user}) => {
     const users = useQuery(api.users.userList) || [];
+ //   const userQ = user.username;
+   // console.log(userQ);
     const events = getEvents("gracelhu", users);
   return (
-    <View style={{backgroundColor: 'white', }}>
+    <View style={{backgroundColor: 'white', flex: 1, alignItems: 'center', gap: 15,}}>
       <Text style={styles.titleText}>Events</Text>
       {events.map((event, index) => (
             <Text key={index}>{event.name}</Text>,
             <Text key={index}>{event.date}</Text>,
             <Text key={index}>{event.time}</Text>
         ))}
+        <View style={styles.first}>
+            <Pressable onPress={() => {navigation.navigate("createevent")}}>
+               <Image style={styles.image} source={require("../pictures/plus.png")}/>
+            </Pressable>
+           
+        </View>
         <View style={styles.event}>
-
+        </View>
+        <View style={styles.event}>
+        </View>
+        <View style={styles.event}>
+        </View>
+        <View style={styles.event}>
         </View>
     </View>
   );
@@ -34,12 +47,22 @@ const styles = StyleSheet.create({
     },
     event: {
         borderWeight: 10,
+        borderColor: 'white',
+        width: 290,
+        height: 150,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        paddingLeft: 20,
+    },
+    first: {
+        borderWeight: 10,
         borderColor: 'black',
         width: 290,
         height: 150,
-        backgroundColor: 'blue',
+        backgroundColor: 'lightgrey',
         borderRadius: 5,
-
+        paddingLeft: 120,
+        paddingTop: 30,
     },
     header: {
         backgroundColor: '#97E0FF',
@@ -50,13 +73,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        height: 100,
-        width: 100,
+        height: 50,
+        width: 50,
         marginTop: 20,
         marginBottom: 10,
-        borderRadius: 999,
-        borderWidth: 2,
-        borderColor: 'black',
+        
     },
     ingredient: {
       backgroundColor: '#B9EBFF',

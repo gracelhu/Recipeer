@@ -9,7 +9,7 @@ function handleSubmit() {
 
 const isValid = true;
 
-const CreateEvent = () => {
+const CreateEvent = ({navigation}) => {
     const [usertheme, setUserTheme] = useState(null);
 
     const [selectedChoice, setSelectedChoice] = useState(null);
@@ -69,7 +69,8 @@ const CreateEvent = () => {
         placeholder={"Enter theme here"}
     />
     
-    <Pressable style={imageUploaderStyles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
+    <Pressable style={imageUploaderStyles.buttonStyle} onPress={() => {
+      navigation.navigate("recipes"); }} disabled={!isValid}>
                             <Text style={imageUploaderStyles.buttonText}>Submit Event</Text>
                         </Pressable>
     </View>
@@ -85,6 +86,7 @@ const imageUploaderStyles=StyleSheet.create({
         borderRadius: 5,
         top: 120,
         left: 85,
+        paddingLeft: 10,
     },
     buttonText: {
         fontSize: 25,
@@ -93,6 +95,7 @@ const imageUploaderStyles=StyleSheet.create({
         borderRadius: 5,
         top: 0,
         left: 20,
+        
     },
     header:{
         fontSize: 35,

@@ -8,7 +8,7 @@ const Profile = ({user}) => {
 
 
     const users = useQuery(api.users.userList) || [];
-    const ingredients = getIngredients("Jj", users);
+    const ingredients = getIngredients(user.username, users);
     console.log(ingredients.length);
     // const userDB = useQuery(api.users.getUser, {username: user.username});
     // console.log(userDB);
@@ -18,7 +18,7 @@ const Profile = ({user}) => {
         <ScrollView>
             <View style={styles.header}>
                 <Image style={styles.image} source={require("../pictures/user.png")}/>
-                <Text style={styles.titleText}>@cami.ai</Text>
+                <Text style={styles.titleText}>@{user.username}</Text>
             </View>
             <View >
                 <Text style={styles.bodyText}>Ingredients</Text>

@@ -7,12 +7,13 @@ import Events from '../screens/Events';
 
 const Tab = createBottomTabNavigator();
 
-function BottomNavigation({user}) {
+function BottomNavigation({navigation, user}) {
   return (
     <Tab.Navigator screenOptions={{tabBarShowLabel: false}}>
       <Tab.Screen 
       name="Events" 
-      component={Events} 
+      children={() => <Events navigation={navigation} />}
+ 
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:40, width: 40}} source={require('../pictures/events.jpg')}/>

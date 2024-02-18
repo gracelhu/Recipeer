@@ -6,6 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigation from './navigator/BottomNavigation';
 import Login from './screens/Login';
 import UploadPic from './screens/UploadPic';
+import CreateEvent from './screens/CreateEvent';
+import Recipes from './screens/Recipes';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
@@ -42,6 +44,8 @@ export default function App() {
           <Stack.Screen name="dashboard">
             {(props) => <BottomNavigation {...props} user={user} />  }
             </Stack.Screen> 
+            <Stack.Screen name="createevent" component={CreateEvent} />
+            <Stack.Screen name="recipes"component={Recipes} />
       </Stack.Navigator>
     </NavigationContainer>
     </ConvexProvider>
