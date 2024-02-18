@@ -1,45 +1,26 @@
-import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable} from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
 import React from 'react';
+import {getEvents} from '../convex/getters';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getIngredients} from '../convex/getters'
 
-const Profile = ({user}) => {
-
-
+const Events = () => {
     const users = useQuery(api.users.userList) || [];
-    const ingredients = getIngredients("Jj", users);
-    console.log(ingredients.length);
-    // const userDB = useQuery(api.users.getUser, {username: user.username});
-    // console.log(userDB);
-    
+    const events = getEvents("gracelhu", users);
+  return (
+    <View style={{backgroundColor: 'white', }}>
+      <Text style={styles.titleText}>Events</Text>
+      {events.map((event, index) => (
+            <Text key={index}>{event.name}</Text>,
+            <Text key={index}>{event.date}</Text>,
+            <Text key={index}>{event.time}</Text>
+        ))}
+        <View style={styles.event}>
 
-    return (
-        <ScrollView>
-            <View style={styles.header}>
-                <Image style={styles.image} source={require("../pictures/user.png")}/>
-                <Text style={styles.titleText}>@cami.ai</Text>
-            </View>
-            <View >
-                <Text style={styles.bodyText}>Ingredients</Text>
-                <View style={styles.ingredients}>
-                    {
-                        ingredients.map((ingredient) => {
-                            return (
-                           <Pressable style={styles.ingredient}>
-                                <Text>{ingredient}</Text>
-                            </Pressable>)
-        
-                        })
-                    }
-                    
-                </View>
-                <Text style={styles.bodyText}>Friends</Text>
-                <Text style={styles.friends}>Add friends..</Text>
-            </View>
-        </ScrollView>
-    )
-}
+        </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
     baseText: {
@@ -49,6 +30,15 @@ const styles = StyleSheet.create({
       fontSize: 35,
       fontWeight: 'bold',
       marginBottom: 10,
+
+    },
+    event: {
+        borderWeight: 10,
+        borderColor: 'black',
+        width: 290,
+        height: 150,
+        backgroundColor: 'blue',
+        borderRadius: 5,
 
     },
     header: {
@@ -101,4 +91,6 @@ const styles = StyleSheet.create({
   });
 
 
-export default Profile;
+
+
+export default Events;

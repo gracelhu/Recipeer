@@ -19,7 +19,7 @@ export default function UploadPic({ navigation, user }) {
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
   
-    const prompt = "I want you to look at the attached image and find the ingredients in the list. Please start the ingredient list with “ and end the ingredient list with “, because I want to parse your response in code easily. Please do not have any text in your response before the “ and after the “. Separate each ingredient in the list with a comma.";    
+    const prompt = "I want you to look at the attached image and find the ingredients in the list. Please write the list with commas in between each ingredient because I want to parse your response in code easily. Please do not have any text in your response before or after the ingredients. Separate each ingredient in the list with a comma. A good example of what I'm expecting format-wise is: apples, tomatoes, oranges";    
     const imageData = {
       inlineData: {
         data: "",
@@ -55,7 +55,7 @@ export default function UploadPic({ navigation, user }) {
         try {
             await processImage({ ...user, ingredients: response });
             console.log('Image processed and database updated.');
-            navigation.navigate('profile');
+            navigation.navigate('dashboard');
           } catch (error) {
             console.error('Error processing image:', error);
           }
@@ -70,7 +70,8 @@ export default function UploadPic({ navigation, user }) {
     let rawresponse = result.response.text();
     console.log("hello");
     console.log(rawresponse);
-    response = rawresponse.split(', ');
+
+    response = rawresponse.split(',');
   };
 
  

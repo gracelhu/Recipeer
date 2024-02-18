@@ -3,15 +3,16 @@ import { StyleSheet, Text, View , Image} from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import Search from '../screens/Search';
 import Profile from '../screens/Profile';
+import Events from '../screens/Events';
 
 const Tab = createBottomTabNavigator();
 
-function BottomNavigation() {
+function BottomNavigation({user}) {
   return (
     <Tab.Navigator screenOptions={{tabBarShowLabel: false}}>
       <Tab.Screen 
-      name="Home" 
-      component={HomeScreen} 
+      name="Events" 
+      component={Events} 
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:40, width: 40}} source={require('../pictures/events.jpg')}/>
@@ -27,7 +28,7 @@ function BottomNavigation() {
       }}/>
       <Tab.Screen 
       name="Profile" 
-      component={Profile} 
+      children={() => <Profile user={user} />}
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:30, width: 30}} source={require('../pictures/profile.jpg')}/>

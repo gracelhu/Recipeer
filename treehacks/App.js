@@ -39,8 +39,9 @@ export default function App() {
           <Stack.Screen name="upload">
               {(props) => <UploadPic {...props} user={user}/>}
             </Stack.Screen> 
-          <Stack.Screen name="profile" component={Profile} />
-          <Stack.Screen name="navbar" component={BottomNavigation} />
+          <Stack.Screen name="dashboard">
+            {(props) => <BottomNavigation {...props} user={user} />  }
+            </Stack.Screen> 
       </Stack.Navigator>
     </NavigationContainer>
     </ConvexProvider>
