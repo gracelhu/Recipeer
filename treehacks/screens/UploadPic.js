@@ -1,12 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Image, View, Platform, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import { useMutation} from 'convex/react';
+import { api } from "../convex/_generated/api";
+
+
+const MODEL_NAME = "gemini-1.0-pro";
+const API_KEY = "AIzaSyA6sN0PxKyoAfo58e4Kgt6WYMZL6f7CDQc";
 
 // updateImage is a necessary argument to forward the image to any parent components.
-export default function UploadPic({ updateImage }) {
+export default function UploadPic({ navigation, user }) {
+
     const [image, setImage] = useState(null);
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+  
+    const prompt = "I want you to look at the attached image and find the ingredients in the list. Please start the ingredient list with “ and end the ingredient list with “, because I want to parse your response in code easily. Please do not have any text in your response before the “ and after the “. Separate each ingredient in the list with a comma.";    
+    const imageData = {
+      inlineData: {
+        data: "",
+        mimeType: "image/png",
+      },
+    };
+
+    const processImage = useMutation(api.users.createUser);
+  let response = ["first"];
+
+
+
   const addImage = async () => {
     // This uses the expo image picker library to access your phone's photos.
     let _image = await ImagePicker.launchImageLibraryAsync({
@@ -23,50 +48,103 @@ export default function UploadPic({ updateImage }) {
         // This converts the image to base64 format.
         content = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
         // This notifies the owner of this component to run a function.
-        updateImage(content);
+        await handleImageUpdate(content);
+        // call the database to insert 
+        console.log(response);
+     
+        try {
+            await processImage({ ...user, ingredients: response });
+            console.log('Image processed and database updated.');
+            navigation.navigate('profile');
+          } catch (error) {
+            console.error('Error processing image:', error);
+          }
+
+
       }
   };
+
+  const handleImageUpdate = async (base64Data) => {
+    imageData.inlineData.data = base64Data;
+    let result = await model.generateContent([prompt, imageData]);
+    let rawresponse = result.response.text();
+    console.log("hello");
+    console.log(rawresponse);
+    response = rawresponse.split(', ');
+  };
+
+ 
+
   return (
     // This is the component part of the image uploader
-    <View style={imageUploaderStyles.container}>
-        { image && <Image
-                source={{ uri: image }}
-                style={{ width: 200, height: 200 }}
-                onPress={addImage}
-        /> }
-            <View style={imageUploaderStyles.uploadBtnContainer}>
-                <TouchableOpacity onPress={addImage} style={imageUploaderStyles.uploadBtn} >
-                    <Text>{image ? 'Edit' : 'Upload'} Image</Text>
-                    <AntDesign name="camera" size={20} color="black" />
-                </TouchableOpacity>
-            </View>
+    <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}}>
+        <View>
+        <Text style={imageUploaderStyles.titleText} >Let's get you set up!</Text>
+        <Text style={imageUploaderStyles.paragraphText}> Take a picture of your pantry or fridge, and upload it below!</Text>
+        
+        <View style={imageUploaderStyles.uploadBtnContainer}>
+            { image && <Image
+                    source={{ uri: image }}
+                    style={imageUploaderStyles.uploadedImage}
+                    onPress={addImage}
+            /> }
+         
+                    <TouchableOpacity onPress={addImage} style={imageUploaderStyles.uploadBtn} >
+                        <Text>{image ? 'Edit' : 'Upload'} Image</Text>
+                        <AntDesign name="camera" size={20} color="black" />
+                    </TouchableOpacity>
+               
+        </View>
+        </View>
     </View>
   );
 }
 
 // Style formatting
 const imageUploaderStyles=StyleSheet.create({
+    baseText: {
+        fontFamily: 'Cochin',
+      },
+      titleText: {
+        fontSize: 35,
+        fontWeight: 'bold',
+        marginBottom: 50,
+        paddingLeft: 25,
+      },
+      paragraphText: {
+        fontSize: 19,
+        fontWeight: 'light',
+        paddingLeft: 16,
+        paddingRight: 16,
+        marginBottom: 30,
+      },
     container:{
         elevation:2,
         height:200,
         width:200,
         backgroundColor:'#efefef',
-        position:'relative',
         borderRadius:999,
         overflow:'hidden',
+        paddingTop: 60,
     },
     uploadBtnContainer:{
         opacity:0.7,
-        position:'absolute',
-        right:0,
-        bottom:0,
         backgroundColor:'lightgrey',
-        width:'100%',
-        height:'25%',
+        width: 200,
+        height:200,
+        borderRadius: 6,
+        paddingTop: 15,
+        marginLeft: 95,
     },
     uploadBtn:{
         display:'flex',
         alignItems:"center",
         justifyContent:'center'
-    }
+    },
+    uploadedImage: {
+        width: 200,
+        aspectRatio: 4 / 3, // Set the aspect ratio based on your requirements
+        borderRadius: 10,
+      },
 })
+

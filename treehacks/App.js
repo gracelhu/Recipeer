@@ -9,7 +9,7 @@ import UploadPic from './screens/UploadPic';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
-
+import Profile from './screens/Profile';
 
 
 
@@ -23,7 +23,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
    const [user, setUser] = useState({username: null, password: null, ingredients: null, 
-   friends: null, recipes: null});
+   friends: "", recipes: ""});
 
    const updateUser = (userData) => {
     setUser(userData);
@@ -36,7 +36,10 @@ export default function App() {
           <Stack.Screen name="login">
              {(props) => <Login {...props} updateUser={updateUser} />}
             </Stack.Screen>
-          <Stack.Screen name="upload" component={UploadPic} updateUser={updateUser}/>
+          <Stack.Screen name="upload">
+              {(props) => <UploadPic {...props} user={user}/>}
+            </Stack.Screen> 
+          <Stack.Screen name="profile" component={Profile} />
           <Stack.Screen name="navbar" component={BottomNavigation} />
       </Stack.Navigator>
     </NavigationContainer>
