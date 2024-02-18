@@ -10,8 +10,8 @@ import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
 import Profile from './screens/Profile';
-
-
+import Events from './screens/Events';
+import AddEvent from './screens/AddEvent';
 
 
 const convex = new ConvexReactClient(CONVEX_URL, {
@@ -33,6 +33,7 @@ export default function App() {
     <ConvexProvider client={convex}>
       <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="events" component={Events}  initialParams={{ username: "gracelhu"}} />
           <Stack.Screen name="login">
              {(props) => <Login {...props} updateUser={updateUser} />}
             </Stack.Screen>
