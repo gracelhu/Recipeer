@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, StyleSheet, Pressable} from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Pressable, Image } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,6 +17,9 @@ const Login = ({navigation, updateUser}) => {
     }
     return (
         <View style={styles.bodyPage}>
+             <Image
+        source={require('./img/recipeer_icon.png')}
+      />
             <Text style={styles.titleText}>Get Started</Text>
             <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
              onSubmit={(values) => {
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
     },
     buttonStyle: {
         width: 250,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#a8b956',
         paddingVertical: 25,
         paddingHorizontal: 32,
         borderRadius: 5,
