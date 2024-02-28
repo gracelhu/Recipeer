@@ -1,14 +1,14 @@
-import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Pressable, Image } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Formik } from 'formik'; 
 
 function handleSubmit() {
-    console.log("hi");
+    console.log("account created");
 }
 
-const Login = ({navigation, updateUser}) => {
+const Signup = ({navigation, updateUser}) => {
 
     const handleLogin = (values) => {
         console.log(values.username);
@@ -16,17 +16,21 @@ const Login = ({navigation, updateUser}) => {
         navigation.navigate('upload');
     }
 
-    const handleSignUpPress = () => {
-        console.log("sign up pressed");
-        navigation.navigate('signup');
-    }
-
+    const leftArrowPressed = async () => {
+        console.log('Left arrow pressed');
+        navigation.navigate('login');
+    
+    };
+    
     return (
         <View style={styles.bodyPage}>
-             <Image style={{width: 150, height: 150,}}
-        source={require('./img/recipeer_icon.png')}
-      />
-            <Text style={styles.titleText}>Get Started</Text>
+            <TouchableOpacity onPress={leftArrowPressed}>
+                <Image
+                    source={require('../pictures/leftarrow.png')}
+                    style={arrowStyles.arrowButton}
+                />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>Create an Account</Text>
             <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
              onSubmit={(values) => {
                 handleLogin(values);
@@ -35,18 +39,13 @@ const Login = ({navigation, updateUser}) => {
                     return (
                         <>
                         <View style={{marginBottom: 50,}}>
+                        <TextInput onChangeText={handleChange('email')} value={values.username} style={styles.input} placeholder={"Email address"} />
                         <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
                         <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
+                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
-
                         <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
-                            <Text style={styles.boldText}>Sign in</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={handleSignUpPress}> 
-                            <Text style={{paddingTop: 20,}}>
-                                <Text style={styles.text}> Don't have an account? </Text>
-                                <Text style={styles.boldText}> Sign up!</Text>
-                            </Text>
+                            <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
                         </>
                     )
@@ -54,11 +53,17 @@ const Login = ({navigation, updateUser}) => {
                 }}
            
             </Formik>
-          
-            
         </View>
     )
 }
+
+const arrowStyles = StyleSheet.create({
+    arrowButton: {
+      width: 30,
+      height: 30,
+      marginHorizontal: 25,
+    },
+  })
 
 const styles = StyleSheet.create({
     baseText: {
@@ -86,13 +91,9 @@ const styles = StyleSheet.create({
         marginTop: 20,
         
     },
-    boldText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
     text: {
-        fontSize: 18,
+        fontSize: 16,
+        fontWeight: 'bold',
         textAlign: 'center',
     },
     input: {
@@ -107,5 +108,4 @@ const styles = StyleSheet.create({
 
   });
 
-export default Login;
-
+export default Signup;

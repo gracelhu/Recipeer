@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigation from './navigator/BottomNavigation';
 import Login from './screens/Login';
+import Signup from './screens/Signup';
 import UploadPic from './screens/UploadPic';
 import CreateEvent from './screens/CreateEvent';
 import Recipes from './screens/Recipes';
@@ -38,6 +39,9 @@ export default function App() {
           <Stack.Screen name="login">
              {(props) => <Login {...props} updateUser={updateUser} />}
             </Stack.Screen>
+          <Stack.Screen name="signup">
+            {(props) => <Signup {...props} user={user}/>}
+          </Stack.Screen>
           <Stack.Screen name="upload">
               {(props) => <UploadPic {...props} user={user}/>}
             </Stack.Screen> 

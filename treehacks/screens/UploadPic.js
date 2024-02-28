@@ -6,6 +6,7 @@ import * as FileSystem from 'expo-file-system';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import { useMutation} from 'convex/react';
 import { api } from "../convex/_generated/api";
+import { useNavigation } from '@react-navigation/native';
 
 
 const MODEL_NAME = "gemini-1.0-pro";
@@ -64,6 +65,18 @@ export default function UploadPic({ navigation, user }) {
       }
   };
 
+  const leftArrowPressed = async () => {
+    console.log('Left arrow pressed');
+    navigation.navigate('login');
+
+  };
+
+  const rightArrowPressed = async () => {
+    console.log('Right arrow pressed');
+    navigation.navigate('dashboard');
+
+  };
+
   const handleImageUpdate = async (base64Data) => {
     imageData.inlineData.data = base64Data;
     let result = await model.generateContent([prompt, imageData]);
@@ -81,13 +94,13 @@ export default function UploadPic({ navigation, user }) {
     // {flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}
     <View style= {{flex: 1}}>
       <View style = {arrowStyles.topBar}>
-      <TouchableOpacity onPress={() => console.log('Left arrow pressed')}>
+      <TouchableOpacity onPress={leftArrowPressed}>
         <Image
           source={require('../pictures/leftarrow.png')}
           style={arrowStyles.arrowButton}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log('Right arrow pressed')}>
+      <TouchableOpacity onPress={rightArrowPressed}>
         <Image
           source={require('../pictures/rightarrow.png')}
           style={arrowStyles.arrowButton}
@@ -178,22 +191,3 @@ const imageUploaderStyles=StyleSheet.create({
         borderRadius: 10,
       },
 })
-
-
-/*
-      <View style={topBarStyles.topBar}>
-      <TouchableOpacity onPress={() => console.log('Left arrow pressed')}>
-        <Image
-          source={require('../pictures/leftarrow.png')}
-          style={topBarStyles.arrowButton}
-        />
-      </TouchableOpacity>
-      <View style={{ flex: 1 }} /> 
-      <TouchableOpacity onPress={() => console.log('Right arrow pressed')}>
-        <Image
-          source={require('../pictures/rightarrow.png')}
-          style={topBarStyles.arrowButton}
-        />
-      </TouchableOpacity>
-    </View>
-*/
