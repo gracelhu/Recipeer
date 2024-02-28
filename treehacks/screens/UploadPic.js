@@ -19,7 +19,7 @@ export default function UploadPic({ navigation, user }) {
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
   
-    const prompt = "I want you to look at the attached image and find the ingredients in the list. Please start the ingredient list with “ and end the ingredient list with “, because I want to parse your response in code easily. Please do not have any text in your response before the “ and after the “. Separate each ingredient in the list with a comma.";    
+    const prompt = "I want you to look at the attached image and find the ingredients in the list. Please write the list with commas in between each ingredient because I want to parse your response in code easily. Please do not have any text in your response before or after the ingredients. Separate each ingredient in the list with a comma. A good example of what I'm expecting format-wise is: apples, tomatoes, oranges";    
     const imageData = {
       inlineData: {
         data: "",
@@ -55,7 +55,7 @@ export default function UploadPic({ navigation, user }) {
         try {
             await processImage({ ...user, ingredients: response });
             console.log('Image processed and database updated.');
-            navigation.navigate('profile');
+            navigation.navigate('dashboard');
           } catch (error) {
             console.error('Error processing image:', error);
           }
@@ -70,14 +70,31 @@ export default function UploadPic({ navigation, user }) {
     let rawresponse = result.response.text();
     console.log("hello");
     console.log(rawresponse);
-    response = rawresponse.split(', ');
+
+    response = rawresponse.split(',');
   };
 
  
 
   return (
     // This is the component part of the image uploader
-    <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}}>
+    // {flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}
+    <View style= {{flex: 1}}>
+      <View style = {arrowStyles.topBar}>
+      <TouchableOpacity onPress={() => console.log('Left arrow pressed')}>
+        <Image
+          source={require('../pictures/leftarrow.png')}
+          style={arrowStyles.arrowButton}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => console.log('Right arrow pressed')}>
+        <Image
+          source={require('../pictures/rightarrow.png')}
+          style={arrowStyles.arrowButton}
+        />
+      </TouchableOpacity>
+      </View>
+    <View style={{flex: 1, paddingTop: 135}}>
         <View>
         <Text style={imageUploaderStyles.titleText} >Let's get you set up!</Text>
         <Text style={imageUploaderStyles.paragraphText}> Take a picture of your pantry or fridge, and upload it below!</Text>
@@ -97,10 +114,24 @@ export default function UploadPic({ navigation, user }) {
         </View>
         </View>
     </View>
+    </View>
   );
 }
 
-// Style formatting
+const arrowStyles = StyleSheet.create({
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 70,
+    justifyContent: 'space-between',
+  },
+  arrowButton: {
+    width: 30,
+    height: 30,
+    marginHorizontal: 25,
+  },
+})
+
 const imageUploaderStyles=StyleSheet.create({
     baseText: {
         fontFamily: 'Cochin',
@@ -148,3 +179,21 @@ const imageUploaderStyles=StyleSheet.create({
       },
 })
 
+
+/*
+      <View style={topBarStyles.topBar}>
+      <TouchableOpacity onPress={() => console.log('Left arrow pressed')}>
+        <Image
+          source={require('../pictures/leftarrow.png')}
+          style={topBarStyles.arrowButton}
+        />
+      </TouchableOpacity>
+      <View style={{ flex: 1 }} /> 
+      <TouchableOpacity onPress={() => console.log('Right arrow pressed')}>
+        <Image
+          source={require('../pictures/rightarrow.png')}
+          style={topBarStyles.arrowButton}
+        />
+      </TouchableOpacity>
+    </View>
+*/

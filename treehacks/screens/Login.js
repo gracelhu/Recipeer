@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Button, StyleSheet, Pressable} from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Pressable, Image } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -17,6 +17,9 @@ const Login = ({navigation, updateUser}) => {
     }
     return (
         <View style={styles.bodyPage}>
+             <Image style={{width: 150, height: 150,}}
+        source={require('./img/recipeer_icon.png')}
+      />
             <Text style={styles.titleText}>Get Started</Text>
             <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
              onSubmit={(values) => {
@@ -25,13 +28,16 @@ const Login = ({navigation, updateUser}) => {
                 {({ values, handleSubmit, handleChange, isValid }) => {
                     return (
                         <>
-                        <View >
+                        <View style={{marginBottom: 50,}}>
                         <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
                         <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
                        </View>
 
                         <Pressable style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
-                            <Text style={styles.text}>Sign up</Text>
+                            <Text style={styles.text}>Sign in</Text>
+                        </Pressable>
+                        <Pressable> 
+                            <Text>Don't have an account? Sign up!</Text>
                         </Pressable>
                         </>
                     )
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
     titleText: {
       fontSize: 35,
       fontWeight: 'bold',
-      marginBottom: 50,
+      marginBottom: 40,
 
     },
     bodyPage: {
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
     },
     buttonStyle: {
         width: 250,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#a8b956',
         paddingVertical: 25,
         paddingHorizontal: 32,
         borderRadius: 5,

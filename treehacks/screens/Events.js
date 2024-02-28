@@ -1,90 +1,160 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Image, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable} from 'react-native';
+import React from 'react';
+import {getEvents} from '../convex/getters';
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { getIngredients, getFriends} from "../convex/getters"
 
-const AddEvent = ({ username }) => {
-  const [eventName, setEventName] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [eventTime, setEventTime] = useState('');
-  const [cuisine, setCuisine] = useState(''); // Added for cuisine
+// const copy1 = `
+// **[Pork Stir-fry with Bell Peppers and Milk Rice]**
+// **- Ingredients:**\n
+//     1/2 lb ground pork
+//     1 red bell pepper, sliced
+//     1 green bell pepper, sliced
+//     1 clove garlic, minced
+//     1 cup cooked rice
+//     1/2 cup milk
+//     1 egg, beaten
+//     2 tbsp cooking oil
+//     Salt and pepper to taste
+// **- Instructions:**\n
+//     Heat oil in a wok or large pan over medium-high heat.
+//     Add the pork and cook until browned.
+//     Add the garlic and bell peppers, stir-fry for 2-3 minutes until softened.
+//     In a separate bowl, whisk together the milk and egg.
+//     Pour the milk-egg mixture into the pan and scramble with the pork and vegetables.
+//     Add the cooked rice and stir-fry until heated through and combined.
+//     Season with salt and pepper to taste.
+//     Serve hot with additional vegetables or fried egg (optional).
+// `;
 
-  const handleEventNameChange = (text) => setEventName(text);
-  const handleEventDateChange = (text) => setEventDate(text);
-  const handleEventTimeChange = (text) => setEventTime(text);
-  const handleCuisineChange = (text) => setCuisine(text); // Added for cuisine
+// const copy2 = `
+// **[Scrambled Eggs with Peas and Cranberry Sauce]**
+// **- Ingredients:**\n
+//     2 eggs
+//     1/2 cup frozen peas
+//     1/4 cup cranberry juice
+//     1 tbsp butter
+//     Salt and pepper to taste
 
-  const submitEvent = () => {
-    // Add your function to handle event submission here
-    // Example:
-    console.log('Event details:', { eventName, eventDate, eventTime, cuisine });
-    // Send data to API, save to local storage, etc.
-  };
+// **- Instructions:**\n
+//     Melt butter in a pan over medium heat.
+//     Add the peas and cook for 2-3 minutes until softened.
+//     Add the eggs and scramble until cooked through, desired consistency.
+//     Reduce heat to low and pour in the cranberry juice.
+//     Let the sauce simmer for a minute to thicken slightly.
+//     Season with salt and pepper to taste.
+//     Serve on toast or with rice.
 
+// `;
+
+// plan to get all the ingredients for an event
+// call getFriends for the specific user, and loop through each friend
+// for each friend, call getIngredients, concatenate their ingredients to the prompt 
+// "Person " + x " ingredients: " + 
+
+const MODEL_NAME = "gemini-1.0-pro";
+const API_KEY = "AIzaSyA6sN0PxKyoAfo58e4Kgt6WYMZL6f7CDQc";
+
+function handleSubmit() {
+    console.log("hi");
+}
+
+const Events = ({navigation, user}) => {
+    const users = useQuery(api.users.userList) || [];
+ //   const userQ = user.username;
+   // console.log(userQ);
+    const events = getEvents("gracelhu", users);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add Event</Text>
-
-      <TextInput
-        style={styles.input}
-        onChangeText={handleEventNameChange}
-        value={eventName}
-        placeholder="Enter event name"
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={handleEventDateChange}
-        value={eventDate}
-        placeholder="Enter event date (YYYY-MM-DD)"
-        keyboardType="datetime-local" // Date and time picker on some platforms
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={handleEventTimeChange}
-        value={eventTime}
-        placeholder="Enter event time (HH:MM)"
-        keyboardType="numeric" // Time picker on some platforms
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={handleCuisineChange}
-        value={cuisine} // Added for cuisine
-        placeholder="Enter cuisine (e.g., Italian, Mexican)"
-      />
-
-      <Button title="Submit Event" onPress={submitEvent} />
+    <View style={{backgroundColor: 'white', flex: 1, alignItems: 'center', gap: 15,}}>
+      <Text style={styles.titleText}>Events</Text>
+      {events.map((event, index) => (
+            <Text key={index}>{event.name}</Text>,
+            <Text key={index}>{event.date}</Text>,
+            <Text key={index}>{event.time}</Text>
+        ))}
+        <View style={styles.first}>
+            <Pressable onPress={() => {navigation.navigate("createevent")}}>
+               <Image style={styles.image} source={require("../pictures/plus.png")}/>
+            </Pressable>
+           
+        </View>
+        <View style={styles.event}>
+        </View>
+        <View style={styles.event}>
+        </View>
+        <View style={styles.event}>
+        </View>
+        <View style={styles.event}>
+        </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
+    baseText: {
+      fontFamily: 'Cochin',
+    },
+    titleText: {
+      fontSize: 35,
+      fontWeight: 'bold',
+      marginBottom: 10,
+
+    },
+    event: {
+        borderWeight: 10,
+        borderColor: 'white',
+        width: 290,
+        height: 150,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        paddingLeft: 20,
+    },
+    first: {
+        borderWeight: 10,
+        borderColor: 'black',
+        width: 290,
+        height: 150,
+        backgroundColor: 'lightgrey',
+        borderRadius: 5,
+        paddingLeft: 120,
+        paddingTop: 30,
+    },
+    header: {
+        backgroundColor: '#97E0FF',
+        height: 200,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    image: {
+        height: 50,
+        width: 50,
+        marginTop: 20,
+        marginBottom: 10,
+        
+    },
+    ingredient: {
+      backgroundColor: '#B9EBFF',
+      fontSize: 20,
+      borderRadius: 5,
+      fontSize: 20,
+      height: 30,
+      width: 70,
+      paddingLeft: 4,
+      paddingTop: 5,
+
+},
+buttonText: {
+    fontSize: 25,
     fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
+    width: 250,
+    borderRadius: 5,
+    top: 0,
+    left: 20,
+    color: 'white',
+},
 });
 
-export default AddEvent;
-
-
-
-// so an addEvent has:
-// event name
-// event date
-// event time 
-// Invite who (for now, maybe we can skip this, bc we're running low on time, just include all your friends
-// in the event)
-// Cuisine 
+export default Events;
