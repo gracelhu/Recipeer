@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Image, Pressable} from 'react-native';
 import React from 'react';
-import {getEvents} from '../convex/getters';
+import {getEvents} from '../convex/convex_functions';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getIngredients, getFriends} from "../convex/getters"
+import { getIngredients, getFriends} from "../convex/convex_functions"
 
 // const copy1 = `
 // **[Pork Stir-fry with Bell Peppers and Milk Rice]**

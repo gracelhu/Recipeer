@@ -12,7 +12,7 @@ import Markdown from 'react-native-markdown-display';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import { api } from "../convex/_generated/api";
 import { useQuery } from "convex/react";
-import { getIngredients, getFriends} from "../convex/getters"
+import { getIngredients, getFriends} from "../convex/convex_functions"
 
 // const copy1 = `
 // **[Pork Stir-fry with Bell Peppers and Milk Rice]**

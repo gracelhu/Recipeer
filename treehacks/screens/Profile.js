@@ -2,7 +2,7 @@ import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable} from 'rea
 import React from 'react';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getIngredients} from '../convex/getters'
+import { getIngredients} from '../convex/convex_functions'
 
 const Profile = ({user}) => {
 

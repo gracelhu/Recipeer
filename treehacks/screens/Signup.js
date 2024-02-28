@@ -1,7 +1,5 @@
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Formik } from 'formik'; 
 
 function handleSubmit() {

@@ -1,32 +1,43 @@
-import { View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Pressable, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, } from 'react-native';
+import { useState } from 'react';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Formik } from 'formik'; 
-
-function handleSubmit() {
-    console.log("hi");
-}
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { userExists} from "../convex/convex_functions"
 
 const Login = ({navigation, updateUser}) => {
+    const users = useQuery(api.users.userList) || [];
+    const [errorMessage, setErrorMessage] = useState(null); 
+    const [inputBoxStyle, setInputBoxStyle] = useState(styles.input); 
 
     const handleLogin = (values) => {
-        console.log(values.username);
-        updateUser(values);
-        navigation.navigate('upload');
+        if(userExists(values.username, values.password, users)) {
+            console.log("username " + values.username + " and password " + values.password + "is valid");
+            updateUser(values);
+            setErrorMessage(null);
+            setInputBoxStyle(styles.input);
+            navigation.navigate('upload');
+        }
+        else {
+            setErrorMessage("username or password is not valid");
+            setInputBoxStyle(styles.inputError);
+            console.log("username " + values.username + " and password " + values.password + "is NOT valid");
+        }
     }
 
     const handleSignUpPress = () => {
         console.log("sign up pressed");
         navigation.navigate('signup');
     }
-
+    
     return (
         <View style={styles.bodyPage}>
              <Image style={{width: 150, height: 150,}}
         source={require('./img/recipeer_icon.png')}
       />
             <Text style={styles.titleText}>Get Started</Text>
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
             <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
              onSubmit={(values) => {
                 handleLogin(values);
@@ -35,8 +46,8 @@ const Login = ({navigation, updateUser}) => {
                     return (
                         <>
                         <View style={{marginBottom: 50,}}>
-                        <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
-                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
+                        <TextInput onChangeText={handleChange('username')} value={values.username} style={inputBoxStyle} placeholder={"Username"} />
+                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={inputBoxStyle} placeholder={"Password"} />
                        </View>
 
                         <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
@@ -104,6 +115,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 15,
     },
+    inputError: {
+        borderRadius: 5,
+        borderColor: 'red',
+        borderWidth: 1,
+        width: 250,
+        height: 50,
+        paddingHorizontal: 10,
+        marginBottom: 15,
+    },
+    errorMessage: {
+        fontSize: 16,
+        color: 'red',
+        padding: 0,
+    }
 
   });
 
