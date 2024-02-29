@@ -63,6 +63,8 @@ const arrowStyles = StyleSheet.create({
       width: 30,
       height: 30,
       marginHorizontal: 25,
+      marginRight: 300,
+      marginBottom: 50,
     },
   })
 
@@ -82,6 +84,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20,
+        marginBottom: 100,
     },
     buttonStyle: {
         width: 250,
