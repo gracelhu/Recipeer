@@ -10,13 +10,25 @@ const Signup = ({navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
     const createUser = useMutation(api.convex_functions.createUser);
     const [passwordMismatchErrorMessage, setPasswordMismatchErrorMessage] = useState(null); 
-    const [existingAccountErrorMessage, setExistingAccountMismatchErrorMessage] = useState(null); 
+    const [existingAccountErrorMessage, setExistingAccountErrorMessage] = useState(null); 
     
     async function handleCreateUser(values) {
-        console.log(values.username);
-        await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
-        //await createUser({ username: 'meow', password: 'meow', emailAddress: 'meow' });
-        navigation.navigate('upload');
+        if(values.password === values.retypedPassword) {
+            if(userExists(values.username, values.password, users)) {
+                console.log("account already exists");
+                setExistingAccountErrorMessage("account already exists - please go back to login page");
+            }
+            else {
+                await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
+                setPasswordMismatchErrorMessage(null);
+                setExistingAccountMismatchErrorMessage(null);
+                navigation.navigate('upload');
+            }
+        }
+        else {
+            console.log("passwords don't match");
+            setPasswordMismatchErrorMessage("passwords don't match");
+        }
     }
 
     const leftArrowPressed = async () => {
@@ -35,7 +47,7 @@ const Signup = ({navigation}) => {
             </TouchableOpacity>
             <Text style={styles.titleText}>Create an Account</Text>
             <Formik initialValues={{username: '', emailAddress: '', password: '', retypedPassword: ''}}>
-                {({ values, handleSubmit, handleChange, isValid }) => {
+                {({ values, handleChange, isValid }) => {
                     return (
                         <>
                         <View style={{marginBottom: 50,}}>
@@ -45,6 +57,7 @@ const Signup = ({navigation}) => {
                         <TextInput onChangeText={handleChange('retypedPassword')} value={values.retypedPassword} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
                         <Text style={styles.errorMessage}>{passwordMismatchErrorMessage}</Text>
+                        <Text style={styles.errorMessage}>{existingAccountErrorMessage}</Text>
                         <TouchableOpacity style={styles.buttonStyle} onPress={() => handleCreateUser(values)} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
