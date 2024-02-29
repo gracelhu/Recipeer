@@ -1,18 +1,32 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import {React, useState} from 'react';
 import { Formik } from 'formik'; 
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
+import { userExists, createUser } from "../convex/convex_functions"
+
 
 const Signup = ({navigation}) => {
-    const [errorMessage, setErrorMessage] = useState(null); 
+    const users = useQuery(api.users.userList) || [];
+    const [passwordMismatchErrorMessage, setPasswordMismatchErrorMessage] = useState(null); 
+    const [existingAccountErrorMessage, setExistingAccountMismatchErrorMessage] = useState(null); 
 
     const handleSignup = (values) => {
         console.log(values.username);
         if(values.password === values.retypedPassword) {
-            navigation.navigate('upload');
+            if(userExists(values.username, values.password, users)) {
+                setExistingAccountMismatchErrorMessage("account already exists - please go back to login page");
+            }
+            else {
+                createUser(values.username, values.password, values.emailAddress);
+                setPasswordMismatchErrorMessage(null);
+                setExistingAccountMismatchErrorMessage(null);
+                navigation.navigate('upload');
+            }
         }
         else {
             console.log("passwords don't match");
-            setErrorMessage("passwords don't match");
+            setPasswordMismatchErrorMessage("passwords don't match");
         }
     }
 
@@ -44,7 +58,7 @@ const Signup = ({navigation}) => {
                         <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
                         <TextInput onChangeText={handleChange('retypedPassword')} value={values.retypedPassword} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
-                        <Text style={styles.errorMessage}>{errorMessage}</Text>
+                        <Text style={styles.errorMessage}>{passwordMismatchErrorMessage}</Text>
                         <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
