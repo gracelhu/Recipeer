@@ -1,0 +1,17 @@
+    const handleSignup = (values) => {
+        console.log(values.username);
+        if(values.password === values.retypedPassword) {
+            if(userExists(values.username, values.password, users)) {
+                setExistingAccountMismatchErrorMessage("account already exists - please go back to login page");
+            }
+            else {
+                setPasswordMismatchErrorMessage(null);
+                setExistingAccountMismatchErrorMessage(null);
+                navigation.navigate('upload');
+            }
+        }
+        else {
+            console.log("passwords don't match");
+            setPasswordMismatchErrorMessage("passwords don't match");
+        }
+    }

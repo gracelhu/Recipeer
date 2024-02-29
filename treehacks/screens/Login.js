@@ -7,7 +7,7 @@ import { api } from "../convex/_generated/api";
 import { userExists} from "../convex/convex_functions"
 
 const Login = ({navigation, updateUser}) => {
-    const users = useQuery(api.users.userList) || [];
+    const users = useQuery(api.convex_functions.userList) || [];
     const [errorMessage, setErrorMessage] = useState(null); 
     const [inputBoxStyle, setInputBoxStyle] = useState(styles.input); 
 

@@ -1,7 +1,10 @@
 
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 // The .find function will return undefined if it couldn't find the element you're looking for 
+
+// Good reference for how to call these kinds of functions:
+// https://github.com/get-convex/convex-demos/blob/main/args-validation/src/App.tsx
 
 // === Reading data === 
 export function userExists(username, password, users) {
@@ -25,11 +28,14 @@ export function getEvents(username, users) {
     return user ? user.events : []; // now you can access friends by index, Ex: graceFriends[indexNumber]
   }
 
+export const userList = query(async (ctx) => {
+    return await ctx.db.query("users").collect();
+})
+
 // === Writing data === 
 export const createUser = mutation({
   args: { username: v.string(), password: v.string(), emailAddress: v.string() },
   handler: async (ctx, args) => {
-    console.log("meow");
     console.log("username: " + args.username + ", password: " + args.password + ", emailAddress: " + args.emailAddress);
     const taskId = await ctx.db.insert("users", { username: args.username, password: args.username, emailAddress: args.emailAddress });
     // do something with `taskId`

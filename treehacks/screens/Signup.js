@@ -1,33 +1,23 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import {React, useState} from 'react';
+import {React, useState, FormEvent} from 'react';
 import { Formik } from 'formik'; 
-import { useQuery } from "convex/react";
+//import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { userExists, createUser } from "../convex/convex_functions"
-
+import { userExists } from "../convex/convex_functions"
 
 const Signup = ({navigation}) => {
-    const users = useQuery(api.users.userList) || [];
+    const users = useQuery(api.convex_functions.userList) || [];
+    const createUser = useMutation(api.convex_functions.createUser);
     const [passwordMismatchErrorMessage, setPasswordMismatchErrorMessage] = useState(null); 
     const [existingAccountErrorMessage, setExistingAccountMismatchErrorMessage] = useState(null); 
-
-    const handleSignup = (values) => {
-        console.log(values.username);
-        if(values.password === values.retypedPassword) {
-            if(userExists(values.username, values.password, users)) {
-                setExistingAccountMismatchErrorMessage("account already exists - please go back to login page");
-            }
-            else {
-                createUser(values.username, values.password, values.emailAddress);
-                setPasswordMismatchErrorMessage(null);
-                setExistingAccountMismatchErrorMessage(null);
-                navigation.navigate('upload');
-            }
-        }
-        else {
-            console.log("passwords don't match");
-            setPasswordMismatchErrorMessage("passwords don't match");
-        }
+    
+    async function handleCreateUser(event) {
+        console.log("meow");
+        event.preventDefault();
+        //await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
+        await createUser({ username: 'meow', password: 'meow', emailAddress: 'meow' });
+        navigation.navigate('upload');
     }
 
     const leftArrowPressed = async () => {
@@ -45,10 +35,7 @@ const Signup = ({navigation}) => {
                 />
             </TouchableOpacity>
             <Text style={styles.titleText}>Create an Account</Text>
-            <Formik initialValues={{username: '', emailAddress: '', password: '', retypedPassword: ''}} 
-             onSubmit={(values) => {
-                handleSignup(values);
-            }}>
+            <Formik initialValues={{username: '', emailAddress: '', password: '', retypedPassword: ''}}>
                 {({ values, handleSubmit, handleChange, isValid }) => {
                     return (
                         <>
@@ -59,7 +46,7 @@ const Signup = ({navigation}) => {
                         <TextInput onChangeText={handleChange('retypedPassword')} value={values.retypedPassword} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
                         <Text style={styles.errorMessage}>{passwordMismatchErrorMessage}</Text>
-                        <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
+                        <TouchableOpacity style={styles.buttonStyle} onPress={handleCreateUser} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
                         </>
