@@ -12,11 +12,10 @@ const Signup = ({navigation}) => {
     const [passwordMismatchErrorMessage, setPasswordMismatchErrorMessage] = useState(null); 
     const [existingAccountErrorMessage, setExistingAccountMismatchErrorMessage] = useState(null); 
     
-    async function handleCreateUser(event) {
-        console.log("meow");
-        event.preventDefault();
-        //await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
-        await createUser({ username: 'meow', password: 'meow', emailAddress: 'meow' });
+    async function handleCreateUser(values) {
+        console.log(values.username);
+        await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
+        //await createUser({ username: 'meow', password: 'meow', emailAddress: 'meow' });
         navigation.navigate('upload');
     }
 
@@ -46,7 +45,7 @@ const Signup = ({navigation}) => {
                         <TextInput onChangeText={handleChange('retypedPassword')} value={values.retypedPassword} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
                         <Text style={styles.errorMessage}>{passwordMismatchErrorMessage}</Text>
-                        <TouchableOpacity style={styles.buttonStyle} onPress={handleCreateUser} disabled={!isValid}>
+                        <TouchableOpacity style={styles.buttonStyle} onPress={() => handleCreateUser(values)} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
                         </>
