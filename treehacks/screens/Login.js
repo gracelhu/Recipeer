@@ -65,8 +65,6 @@ const Login = ({navigation, updateUser}) => {
                 }}
            
             </Formik>
-          
-            
         </View>
     )
 }

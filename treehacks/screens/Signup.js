@@ -1,17 +1,19 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import React from 'react';
+import {React, useState} from 'react';
 import { Formik } from 'formik'; 
 
-function handleSubmit() {
-    console.log("account created");
-}
+const Signup = ({navigation}) => {
+    const [errorMessage, setErrorMessage] = useState(null); 
 
-const Signup = ({navigation, updateUser}) => {
-
-    const handleLogin = (values) => {
+    const handleSignup = (values) => {
         console.log(values.username);
-        updateUser(values);
-        navigation.navigate('upload');
+        if(values.password === values.retypedPassword) {
+            navigation.navigate('upload');
+        }
+        else {
+            console.log("passwords don't match");
+            setErrorMessage("passwords don't match");
+        }
     }
 
     const leftArrowPressed = async () => {
@@ -29,19 +31,20 @@ const Signup = ({navigation, updateUser}) => {
                 />
             </TouchableOpacity>
             <Text style={styles.titleText}>Create an Account</Text>
-            <Formik initialValues={{username: '', password: '', ingredients: '', friends: '', recipes: ''}} 
+            <Formik initialValues={{username: '', emailAddress: '', password: '', retypedPassword: ''}} 
              onSubmit={(values) => {
-                handleLogin(values);
+                handleSignup(values);
             }}>
                 {({ values, handleSubmit, handleChange, isValid }) => {
                     return (
                         <>
                         <View style={{marginBottom: 50,}}>
-                        <TextInput onChangeText={handleChange('email')} value={values.username} style={styles.input} placeholder={"Email address"} />
+                        <TextInput onChangeText={handleChange('emailAddress')} value={values.emailAddress} style={styles.input} placeholder={"Email address"} />
                         <TextInput onChangeText={handleChange('username')} value={values.username} style={styles.input} placeholder={"Username"} />
                         <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Password"} />
-                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
+                        <TextInput onChangeText={handleChange('retypedPassword')} value={values.retypedPassword} secureTextEntry={true} style={styles.input} placeholder={"Retype Password"} />
                        </View>
+                        <Text style={styles.errorMessage}>{errorMessage}</Text>
                         <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>
@@ -103,6 +106,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: 15,
     },
+    errorMessage: {
+        fontSize: 16,
+        color: 'red',
+        padding: 0,
+    }
 
   });
 
