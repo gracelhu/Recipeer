@@ -4,24 +4,29 @@ import { Formik } from 'formik';
 //import { useMutation, useQuery } from "convex/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { userExists } from "../convex/convex_functions"
+import { usernameAndPasswordExists, emailExists } from "../convex/convex_functions"
 
 const Signup = ({navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
     const createUser = useMutation(api.convex_functions.createUser);
     const [passwordMismatchErrorMessage, setPasswordMismatchErrorMessage] = useState(null); 
     const [existingAccountErrorMessage, setExistingAccountErrorMessage] = useState(null); 
+    const [existingEmailErrorMessage, setExistingEmailErrorMessage] = useState(null);
     
     async function handleCreateUser(values) {
         if(values.password === values.retypedPassword) {
-            if(userExists(values.username, values.password, users)) {
+            if(usernameAndPasswordExists(values.username, values.password, users)) {
                 console.log("account already exists");
                 setExistingAccountErrorMessage("account already exists - please go back to login page");
+            }
+            else if(emailExists(values.emailAddress, users) && !usernameAndPasswordExists(values.username, values.password, users)) {
+                console.log("email address already exists");
+                setExistingEmailErrorMessage("email address is already associated with an account - please go back to login page");
             }
             else {
                 await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
                 setPasswordMismatchErrorMessage(null);
-                setExistingAccountMismatchErrorMessage(null);
+                setExistingAccountErrorMessage(null);
                 navigation.navigate('upload');
             }
         }
@@ -58,6 +63,7 @@ const Signup = ({navigation}) => {
                        </View>
                         <Text style={styles.errorMessage}>{passwordMismatchErrorMessage}</Text>
                         <Text style={styles.errorMessage}>{existingAccountErrorMessage}</Text>
+                        <Text style={styles.errorMessage}>{existingEmailErrorMessage}</Text>
                         <TouchableOpacity style={styles.buttonStyle} onPress={() => handleCreateUser(values)} disabled={!isValid}>
                             <Text style={styles.text}>Sign up</Text>
                         </TouchableOpacity>

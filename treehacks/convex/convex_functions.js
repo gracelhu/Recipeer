@@ -7,10 +7,16 @@ import { v } from "convex/values";
 // https://github.com/get-convex/convex-demos/blob/main/args-validation/src/App.tsx
 
 // === Reading data === 
-export function userExists(username, password, users) {
+export function usernameAndPasswordExists(username, password, users) {
     const user = users.find(user => user.username === username && user.password === password); 
     if(user !== undefined) { return true; }
     else { return false; }
+}
+
+export function emailExists(emailAddress, users) {
+  const user = users.find(user => user.emailAddress === emailAddress); 
+  if(user !== undefined) { return true; }
+  else { return false; }
 }
 
 export function getIngredients(username, users) {
