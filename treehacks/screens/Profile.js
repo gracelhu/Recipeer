@@ -17,16 +17,31 @@ const Profile = ({user, navigation}) => {
         navigation.navigate('login');
     };
 
+    const settingsPressed = async () => {
+        console.log('settings pressed');
+    };
+
+    // style={{marginRight: 320, marginTop: 10}
     return (
         <ScrollView>
             <View style={styles.header}>
-                <TouchableOpacity onPress={logoutPressed} style={{marginRight: 320, marginTop: 10}}>
-                    <Image
-                        source={require('../pictures/logout.png')}
-                        style={styles.logout}
-                    />
+                <View style={styles.topBar}>
+                    <TouchableOpacity onPress={logoutPressed}>
+                        <Image
+                            source={require('../pictures/logout.png')}
+                            style={styles.logout}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={settingsPressed}>
+                        <Image
+                            source={require('../pictures/settings.png')}
+                            style={styles.settings}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity>
+                    <Image style={styles.image} source={require("../pictures/user.png")}/>
                 </TouchableOpacity>
-                <Image style={styles.image} source={require("../pictures/user.png")}/>
                 <Text style={styles.titleText}>@{user.username}</Text>
             </View>
             <View >
@@ -57,12 +72,22 @@ const Profile = ({user, navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    topBar: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     logout: {
         width: 30,
         height: 30,
-        marginHorizontal: 25,
-        marginTop: 10,
-        marginBottom: 10,
+        marginHorizontal: 140,
+        marginTop: 20,
+    }, 
+    settings: {
+        width: 25,
+        height: 25,
+        marginHorizontal: 140,
+        marginTop: 20,
     }, 
     uploadBtnContainer:{
         opacity:0.7,
@@ -83,9 +108,9 @@ const styles = StyleSheet.create({
       fontFamily: 'Cochin',
     },
     titleText: {
-      fontSize: 35,
+      fontSize: 30,
       fontWeight: 'bold',
-      marginBottom: 10,
+      marginBottom: 20,
 
     },
     header: {
