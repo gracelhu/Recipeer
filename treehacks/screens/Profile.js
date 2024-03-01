@@ -1,47 +1,84 @@
-import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, TouchableOpacity} from 'react-native';
 import React from 'react';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getIngredients} from '../convex/convex_functions'
+import { getIngredients} from '../convex/convex_functions';
+import { AntDesign } from '@expo/vector-icons';
 
-const Profile = ({user}) => {
-
-
-    const users = useQuery(api.users.userList) || [];
+const Profile = ({user, navigation}) => {
+    const users = useQuery(api.convex_functions.userList) || [];
     const ingredients = getIngredients(user.username, users);
-    console.log(ingredients.length);
+    //console.log(ingredients.length);
     // const userDB = useQuery(api.users.getUser, {username: user.username});
     // console.log(userDB);
     
+    const logoutPressed = async () => {
+        console.log('logout pressed');
+        navigation.navigate('login');
+    };
 
     return (
         <ScrollView>
             <View style={styles.header}>
+                <TouchableOpacity onPress={logoutPressed} style={{marginRight: 320, marginTop: 10}}>
+                    <Image
+                        source={require('../pictures/logout.png')}
+                        style={styles.logout}
+                    />
+                </TouchableOpacity>
                 <Image style={styles.image} source={require("../pictures/user.png")}/>
                 <Text style={styles.titleText}>@{user.username}</Text>
             </View>
             <View >
-                <Text style={styles.bodyText}>Ingredients</Text>
+                <Text style={styles.bodyText}>Friends</Text>
+                <View style={styles.divider}></View>
+                <Text style={styles.bodyText}>Allergies </Text>
+                <View style={styles.divider}></View>
                 <View style={styles.ingredients}>
+                <Text style={styles.bodyText}>Ingredients</Text>
+                <TouchableOpacity style={styles.uploadBtnContainer} >
+                    <Text>Upload or take a picture of your food!</Text>
+                    <AntDesign name="camera" size={20} color="black" />
+                </TouchableOpacity>
+                <View style={styles.divider}></View>
                     {
-                        ingredients.map((ingredient) => {
+                        /*ingredients.map((ingredient) => {
                             return (
                            <Pressable style={styles.ingredient}>
                                 <Text>{ingredient}</Text>
                             </Pressable>)
         
-                        })
+                        }) */
                     }
-                    
                 </View>
-                <Text style={styles.bodyText}>Friends</Text>
-                <Text style={styles.friends}>Add friends..</Text>
             </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
+    logout: {
+        width: 30,
+        height: 30,
+        marginHorizontal: 25,
+        marginTop: 10,
+        marginBottom: 10,
+    }, 
+    uploadBtnContainer:{
+        opacity:0.7,
+        backgroundColor:'lightgrey',
+        width: 200,
+        height:200,
+        borderRadius: 6,
+        paddingTop: 15,
+        marginLeft: 95,
+        alignItems: 'center',
+    },
+    divider: {
+        height: 2, 
+        backgroundColor: '#D6D6D6',
+        marginVertical: 10, 
+    },
     baseText: {
       fontFamily: 'Cochin',
     },
@@ -52,8 +89,9 @@ const styles = StyleSheet.create({
 
     },
     header: {
-        backgroundColor: '#97E0FF',
-        height: 200,
+        //backgroundColor: '#97E0FF',
+        backgroundColor: '#CCDDAA',
+        height: 220,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
@@ -80,7 +118,7 @@ const styles = StyleSheet.create({
 
     },
     bodyText: {
-        fontSize: 25,
+        fontSize: 21,
         fontWeight: 'bold',
         padding: 20,
     },

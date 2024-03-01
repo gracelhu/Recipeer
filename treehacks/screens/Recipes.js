@@ -80,7 +80,7 @@ const Recipes = ({navigation}) => {
     If there's any specific ingredients that could enhance the dishes and are
     specific to Chinese cuisine, please let us know but in a separate section,
     or mark the ingredient as optional.\n`;
-    const users = useQuery(api.users.userList) || [];
+    const users = useQuery(api.convex_functions.userList) || [];
     // new user account username we're demoing with: johndoe 
     const friends = getFriends("johndoe", users);
     // for(int x = 0; x < friends.length; x++) {

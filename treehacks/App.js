@@ -8,6 +8,7 @@ import Login from './screens/Login';
 import Signup from './screens/Signup';
 import UploadPic from './screens/UploadPic';
 import CreateEvent from './screens/CreateEvent';
+import Events from './screens/Events';
 import Recipes from './screens/Recipes';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
@@ -50,6 +51,7 @@ export default function App() {
             </Stack.Screen> 
             <Stack.Screen name="createevent" component={CreateEvent} />
             <Stack.Screen name="recipes"component={Recipes} />
+            <Stack.Screen name="events"component={Events} />
       </Stack.Navigator>
     </NavigationContainer>
     </ConvexProvider>

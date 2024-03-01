@@ -4,20 +4,19 @@ import React from 'react';
 import { Formik } from 'formik'; 
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { userExists} from "../convex/convex_functions"
+import { usernameAndPasswordExists} from "../convex/convex_functions"
 
-const Login = ({navigation, updateUser}) => {
+const Login = ({navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
     const [errorMessage, setErrorMessage] = useState(null); 
     const [inputBoxStyle, setInputBoxStyle] = useState(styles.input); 
 
     const handleLogin = (values) => {
-        if(userExists(values.username, values.password, users)) {
+        if(usernameAndPasswordExists(values.username, values.password, users)) {
             console.log("username " + values.username + " and password " + values.password + "is valid");
-            updateUser(values);
             setErrorMessage(null);
             setInputBoxStyle(styles.input);
-            navigation.navigate('upload');
+            navigation.navigate('dashboard');
         }
         else {
             setErrorMessage("username or password is not valid");

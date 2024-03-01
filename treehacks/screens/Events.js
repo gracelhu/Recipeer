@@ -61,7 +61,14 @@ function handleSubmit() {
 }
 
 const Events = ({navigation, user}) => {
-    const users = useQuery(api.users.userList) || [];
+
+  const leftArrowPressed = async () => {
+    console.log('Left arrow pressed');
+    navigation.navigate('login');
+
+  };
+  
+    const users = useQuery(api.convex_functions.userList) || [];
  //   const userQ = user.username;
    // console.log(userQ);
     const events = getEvents("gracelhu", users);

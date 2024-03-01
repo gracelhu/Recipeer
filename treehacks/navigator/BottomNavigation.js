@@ -3,12 +3,21 @@ import { StyleSheet, Text, View , Image} from 'react-native';
 import Search from '../screens/Search';
 import Profile from '../screens/Profile';
 import Events from '../screens/Events';
+import RecipeGenerator from '../screens/RecipeGenerator';
 
 const Tab = createBottomTabNavigator();
 
 function BottomNavigation({navigation, user}) {
   return (
     <Tab.Navigator screenOptions={{tabBarShowLabel: false}}>
+      <Tab.Screen 
+      name="AI" 
+      children={() => <RecipeGenerator/>}
+      options={{
+         tabBarIcon: ({focused}) => (
+            <Image style={{height:30, width: 30}} source={require('../pictures/whisk.png')}/>
+         )
+      }}/>
       <Tab.Screen 
       name="Events" 
       children={() => <Events navigation={navigation} />}
@@ -28,7 +37,7 @@ function BottomNavigation({navigation, user}) {
       }}/>
       <Tab.Screen 
       name="Profile" 
-      children={() => <Profile user={user} />}
+      children={() => <Profile user={user} navigation={navigation} />}
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:30, width: 30}} source={require('../pictures/profile.jpg')}/>

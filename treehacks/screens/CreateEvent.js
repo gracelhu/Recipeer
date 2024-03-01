@@ -1,4 +1,4 @@
-import { View, Text, Button , StyleSheet, TextInput , Pressable } from 'react-native'
+import { View, Text, Button , StyleSheet, TextInput , Pressable, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RadioButtonImage from './RadioButtonImage';
@@ -10,9 +10,9 @@ function handleSubmit() {
 const isValid = true;
 
 const CreateEvent = ({navigation}) => {
-    const [usertheme, setUserTheme] = useState(null);
+  const [usertheme, setUserTheme] = useState(null);
 
-    const [selectedChoice, setSelectedChoice] = useState(null);
+  const [selectedChoice, setSelectedChoice] = useState(null);
   const handleSelect = (value) => setSelectedChoice(value);
 
   const setDate = (event, date) => {
@@ -29,8 +29,20 @@ const CreateEvent = ({navigation}) => {
     const utcOffset = event.nativeEvent.utcOffset;
   };
 
+  const leftArrowPressed = async () => {
+    console.log('Left arrow pressed');
+    navigation.navigate('dashboard');
+
+  };
+
   return (
     <View>
+        <TouchableOpacity onPress={leftArrowPressed}>
+        <Image
+          source={require('../pictures/leftarrow.png')}
+          style={arrowStyles.arrowButton}
+        />
+        </TouchableOpacity>
         <Text style={imageUploaderStyles.header}>Schedule Event!</Text>
         <Text style={imageUploaderStyles.select_time}>Select time:</Text>
       <Text style={imageUploaderStyles.datePicker}>
@@ -77,6 +89,15 @@ const CreateEvent = ({navigation}) => {
   );
 };
 
+const arrowStyles = StyleSheet.create({
+  arrowButton: {
+    width: 30,
+    height: 30,
+    marginHorizontal: 25,
+    marginRight: 300,
+    marginTop: 50,
+  },
+})
 
 const imageUploaderStyles=StyleSheet.create({
     buttonStyle: {
