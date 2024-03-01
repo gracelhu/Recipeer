@@ -19,6 +19,7 @@ const Profile = ({user, navigation}) => {
 
     const settingsPressed = async () => {
         console.log('settings pressed');
+        navigation.navigate('settings');
     };
 
     // style={{marginRight: 320, marginTop: 10}

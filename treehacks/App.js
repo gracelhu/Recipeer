@@ -13,7 +13,7 @@ import Recipes from './screens/Recipes';
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
-import Profile from './screens/Profile';
+import Settings from './screens/Settings';
 
 
 
@@ -49,9 +49,10 @@ export default function App() {
           <Stack.Screen name="dashboard">
             {(props) => <BottomNavigation {...props} user={user} />  }
             </Stack.Screen> 
-            <Stack.Screen name="createevent" component={CreateEvent} />
-            <Stack.Screen name="recipes"component={Recipes} />
-            <Stack.Screen name="events"component={Events} />
+          <Stack.Screen name="createevent" component={CreateEvent} />
+          <Stack.Screen name="recipes" component={Recipes} />
+          <Stack.Screen name="events" component={Events} />
+          <Stack.Screen name="settings" component={Settings}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
     </ConvexProvider>
