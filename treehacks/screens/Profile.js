@@ -1,16 +1,26 @@
 import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, TouchableOpacity} from 'react-native';
-import React from 'react';
+import {React, useState} from 'react';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { getIngredients} from '../convex/convex_functions';
 import { AntDesign } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 const Profile = ({user, navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
     const ingredients = getIngredients(user.username, users);
+    const [profilePicture, setProfilePicture] = useState(null);
     //console.log(ingredients.length);
     // const userDB = useQuery(api.users.getUser, {username: user.username});
     // console.log(userDB);
+
+    const imageData = {
+        inlineData: {
+          data: "",
+          mimeType: "image/png",
+        },
+    };
     
     const logoutPressed = async () => {
         console.log('logout pressed');
@@ -21,6 +31,26 @@ const Profile = ({user, navigation}) => {
         console.log('settings pressed');
         navigation.navigate('settings');
     };
+
+    const pickImage = async () => {
+        // This uses the expo image picker library to access your phone's photos.
+        let _image = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4,3],
+          quality: 1,
+        });
+        if (!_image.cancelled) {
+            const uri = _image.assets[0].uri;
+            setProfilePicture(uri);
+            content = await FileSystem.readAsStringAsync(uri, { encoding: 'base64' });
+            await handleImageUpdate(content);
+          }
+      };
+
+      const handleImageUpdate = async (base64Data) => {
+        imageData.inlineData.data = base64Data;
+      };
 
     // style={{marginRight: 320, marginTop: 10}
     return (
@@ -40,8 +70,8 @@ const Profile = ({user, navigation}) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
-                    <Image style={styles.image} source={require("../pictures/user.png")}/>
+                <TouchableOpacity onPress={pickImage}>
+                    <Image style={styles.image} source={profilePicture ? { uri: profilePicture } : require('../pictures/user.png')}/>
                 </TouchableOpacity>
                 <Text style={styles.titleText}>@{user.username}</Text>
             </View>

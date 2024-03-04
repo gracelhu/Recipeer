@@ -17,7 +17,7 @@ const Settings = ({navigation}) => {
             </TouchableOpacity>
             <Text style={styles.titleText}>Settings</Text>
         </View>
-    )
+    ) 
 }
 
 const styles = StyleSheet.create({

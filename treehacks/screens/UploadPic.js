@@ -29,7 +29,7 @@ export default function UploadPic({ navigation, user }) {
     };
 
     const processImage = useMutation(api.convex_functions.createUser);
-  let response = ["first"];
+    let response = ["first"];
 
 
 
