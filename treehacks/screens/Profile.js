@@ -9,6 +9,9 @@ import * as FileSystem from 'expo-file-system';
 
 const Profile = ({user, navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
+    console.log("inside profile");
+    console.log("username: " + user.username);
+    console.log("password: " + user.password);
     const ingredients = getIngredients(user.username, users);
     const [profilePicture, setProfilePicture] = useState(null);
     //console.log(ingredients.length);
@@ -75,6 +78,17 @@ const Profile = ({user, navigation}) => {
                 </TouchableOpacity>
                 <Text style={styles.titleText}>@{user.username}</Text>
             </View>
+            <View style={{justifyContent: 'center', flexDirection: 'row', padding: 20, justifyContent: 'space-between'}}>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Create Event</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Scan Food</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Add Friend</Text>
+                </TouchableOpacity>
+            </View>
             <View >
                 <Text style={styles.bodyText}>Friends</Text>
                 <View style={styles.divider}></View>
@@ -103,6 +117,19 @@ const Profile = ({user, navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    button: {
+        width:100,
+        height:60,
+        backgroundColor: '#B4D196',
+        borderRadius: 10,
+    },
+    buttonText: {
+        color:'#4D6B2E', 
+        fontWeight: 'bold', 
+        fontSize: '16',
+        padding: 10,
+        textAlign: 'center',
+    },
     topBar: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -146,7 +173,8 @@ const styles = StyleSheet.create({
     },
     header: {
         //backgroundColor: '#97E0FF',
-        backgroundColor: '#CCDDAA',
+        //backgroundColor: '#CCDDAA',
+        backgroundColor: '#F3EACB',
         height: 220,
         flex: 1,
         flexDirection: 'column',

@@ -4,35 +4,31 @@ import Search from '../screens/Search';
 import Profile from '../screens/Profile';
 import Events from '../screens/Events';
 import RecipeGenerator from '../screens/RecipeGenerator';
+import SavedRecipes from '../screens/SavedRecipes';
 
 const Tab = createBottomTabNavigator();
 
-function BottomNavigation({navigation, user}) {
+function BottomNavigation({user, navigation}) {
+   console.log("inside bottom navigation");
+   console.log("username: " + user.username);
+   console.log("password: " + user.password);
+   
   return (
     <Tab.Navigator screenOptions={{tabBarShowLabel: false}}>
       <Tab.Screen 
-      name="AI" 
+      name="Saved Recipes" 
+      children={() => <SavedRecipes/>}
+      options={{
+         tabBarIcon: ({focused}) => (
+            <Image style={{height:25, width: 30}} source={require('../pictures/recipebook.png')}/>
+         )
+      }}/>
+      <Tab.Screen 
+      name="AI Recipe Generator" 
       children={() => <RecipeGenerator/>}
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:30, width: 30}} source={require('../pictures/whisk.png')}/>
-         )
-      }}/>
-      <Tab.Screen 
-      name="Events" 
-      children={() => <Events navigation={navigation} />}
- 
-      options={{
-         tabBarIcon: ({focused}) => (
-            <Image style={{height:40, width: 40}} source={require('../pictures/events.jpg')}/>
-         )
-      }}/>
-      <Tab.Screen 
-      name="Search" 
-      component={Search} 
-      options={{
-         tabBarIcon: ({focused}) => (
-            <Image style={{height:24, width: 24}} source={require('../pictures/search.webp')}/>
          )
       }}/>
       <Tab.Screen 

@@ -7,16 +7,23 @@ import { api } from "../convex/_generated/api";
 import { usernameAndPasswordExists} from "../convex/convex_functions"
 
 const Login = ({navigation}) => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const users = useQuery(api.convex_functions.userList) || [];
     const [errorMessage, setErrorMessage] = useState(null); 
     const [inputBoxStyle, setInputBoxStyle] = useState(styles.input); 
 
     const handleLogin = (values) => {
-        if(usernameAndPasswordExists(values.username, values.password, users)) {
-            console.log("username " + values.username + " and password " + values.password + "is valid");
+        if(usernameAndPasswordExists(username, password, users)) {
+            console.log("username " + username + " and password " + password + " is valid");
             setErrorMessage(null);
             setInputBoxStyle(styles.input);
-            navigation.navigate('dashboard');
+            //const user = {username, password};
+            //navigation.navigate('dashboard', {user, navigation});
+            const user = { username: username, password: password };
+            console.log(user.username);
+            console.log(user.password);
+            navigation.navigate('dashboard', {user});
         }
         else {
             setErrorMessage("username or password is not valid");
@@ -45,8 +52,8 @@ const Login = ({navigation}) => {
                     return (
                         <>
                         <View style={{marginBottom: 50,}}>
-                        <TextInput onChangeText={handleChange('username')} value={values.username} style={inputBoxStyle} placeholder={"Username"} />
-                        <TextInput onChangeText={handleChange('password')} value={values.password} secureTextEntry={true} style={inputBoxStyle} placeholder={"Password"} />
+                        <TextInput onChangeText={text => setUsername(text)} value={username} style={inputBoxStyle} placeholder={"Username"} />
+                        <TextInput onChangeText={text => setPassword(text)} value={password} secureTextEntry={true} style={inputBoxStyle} placeholder={"Password"} />
                        </View>
 
                         <TouchableOpacity style={styles.buttonStyle} onPress={handleSubmit} disabled={!isValid}>
