@@ -24,7 +24,9 @@ const Signup = ({navigation}) => {
                 setExistingEmailErrorMessage("email address is already associated with an account - please go back to login page");
             }
             else {
-                await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress });
+                //  username: '', password: '', email: '', allergies: [], ingredients: [], events: [], usernamesOfFriends: []
+                await createUser({ username: values.username, password: values.password, emailAddress: values.emailAddress, 
+                allergies: [], ingredients: [], events: [], usernamesOfFriends: []});
                 setPasswordMismatchErrorMessage(null);
                 setExistingAccountErrorMessage(null);
                 navigation.navigate('upload');

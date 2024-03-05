@@ -40,31 +40,15 @@ export const userList = query(async (ctx) => {
 
 // === Writing data === 
 export const createUser = mutation({
-  args: { username: v.string(), password: v.string(), emailAddress: v.string() },
+  args: { username: v.string(), password: v.string(), emailAddress: v.string(), allergies: v.array(v.string()), 
+  ingredients: v.array(v.string()), events: v.array(v.string()), usernamesOfFriends: v.array(v.string())},
   handler: async (ctx, args) => {
     console.log("username: " + args.username + ", password: " + args.password + ", emailAddress: " + args.emailAddress);
-    const taskId = await ctx.db.insert("users", { username: args.username, password: args.username, emailAddress: args.emailAddress });
+    const taskId = await ctx.db.insert("users", { username: args.username, password: args.username, 
+      emailAddress: args.emailAddress, allergies: args.allergies, ingredients: args.ingredients, events: args.events,
+    usernamesOfFriends: args.usernamesOfFriends });
     // do something with `taskId`
   },
 });
 
-// The convex db schema:
-
-/*
-recipeer: defineTable({
-    events: v.array(
-      v.object({
-        date: v.string(),
-        name: v.string(),
-        peopleAttending: v.array(v.string()),
-        recipes: v.string(),
-        time: v.string(),
-      })
-    ),
-    ingredients: v.array(v.string()),
-    password: v.string(),
-    username: v.string(),
-    emailAddress: v.string(),
-    usernamesOfFriends: v.array(v.string()),
-  }),
-*/
+//  username: '', password: '', email: '', allergies: [], ingredients: [], events: [], usernamesOfFriends: []
