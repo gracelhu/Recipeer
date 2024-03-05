@@ -34,7 +34,7 @@ function BottomNavigation({navigation}) {
       children={() => <Profile navigation={navigation} />}
       options={{
          tabBarIcon: ({focused}) => (
-            <Image style={{height:30, width: 30}} source={require('../pictures/profile.jpg')}/>
+            <Image style={{height:30, width: 30}} source={require('../pictures/usericon.png')}/>
          )
       }}/>
     
