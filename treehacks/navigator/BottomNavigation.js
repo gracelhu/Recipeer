@@ -8,10 +8,8 @@ import SavedRecipes from '../screens/SavedRecipes';
 
 const Tab = createBottomTabNavigator();
 
-function BottomNavigation({user, navigation}) {
+function BottomNavigation({navigation}) {
    console.log("inside bottom navigation");
-   console.log("username: " + user.username);
-   console.log("password: " + user.password);
    
   return (
     <Tab.Navigator screenOptions={{tabBarShowLabel: false}}>
@@ -33,7 +31,7 @@ function BottomNavigation({user, navigation}) {
       }}/>
       <Tab.Screen 
       name="Profile" 
-      children={() => <Profile user={user} navigation={navigation} />}
+      children={() => <Profile navigation={navigation} />}
       options={{
          tabBarIcon: ({focused}) => (
             <Image style={{height:30, width: 30}} source={require('../pictures/profile.jpg')}/>

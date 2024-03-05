@@ -1,10 +1,11 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, } from 'react-native';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import React from 'react';
 import { Formik } from 'formik'; 
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { usernameAndPasswordExists} from "../convex/convex_functions"
+import { usernameAndPasswordExists} from "../convex/convex_functions";
+import { UserContext } from '../App';
 
 const Login = ({navigation}) => {
     const [username, setUsername] = useState('');
@@ -12,18 +13,19 @@ const Login = ({navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
     const [errorMessage, setErrorMessage] = useState(null); 
     const [inputBoxStyle, setInputBoxStyle] = useState(styles.input); 
+    const { userInfo, setUserInfo } = useContext(UserContext);
 
     const handleLogin = (values) => {
         if(usernameAndPasswordExists(username, password, users)) {
-            console.log("username " + username + " and password " + password + " is valid");
             setErrorMessage(null);
             setInputBoxStyle(styles.input);
-            //const user = {username, password};
-            //navigation.navigate('dashboard', {user, navigation});
-            const user = { username: username, password: password };
-            console.log(user.username);
-            console.log(user.password);
-            navigation.navigate('dashboard', {user});
+            
+            // Update userInfo
+            //const { userInfo, setUserInfo } = useContext(UserContext);
+            const updatedUserInfo = { ...userInfo, username: username, password: password };
+            setUserInfo(updatedUserInfo); 
+
+            navigation.navigate('dashboard');
         }
         else {
             setErrorMessage("username or password is not valid");

@@ -1,19 +1,24 @@
 import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, TouchableOpacity} from 'react-native';
-import {React, useState} from 'react';
+import {React, useState, useContext} from 'react';
 import { useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { getIngredients} from '../convex/convex_functions';
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { UserContext } from '../App';
 
 const Profile = ({user, navigation}) => {
     const users = useQuery(api.convex_functions.userList) || [];
-    console.log("inside profile");
-    console.log("username: " + user.username);
-    console.log("password: " + user.password);
-    const ingredients = getIngredients(user.username, users);
+
+    // get the username and password 
+    const { userInfo } = useContext(UserContext);
+    const { username, password } = userInfo;
+    console.log("username: " + username);
+    console.log("password: " + password); 
+
     const [profilePicture, setProfilePicture] = useState(null);
+    //const ingredients = getIngredients(user.username, users);
     //console.log(ingredients.length);
     // const userDB = useQuery(api.users.getUser, {username: user.username});
     // console.log(userDB);
@@ -55,6 +60,18 @@ const Profile = ({user, navigation}) => {
         imageData.inlineData.data = base64Data;
       };
 
+      const goToCreateEvent = async() => {
+        navigation.navigate('createevent');
+      };
+
+      const goToUploadPicture = async() => {
+        navigation.navigate('upload');
+      };
+
+      const goToSearchFriends = async() => {
+        navigation.navigate('search');
+      };
+
     // style={{marginRight: 320, marginTop: 10}
     return (
         <ScrollView>
@@ -66,6 +83,9 @@ const Profile = ({user, navigation}) => {
                             style={styles.logout}
                         />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={pickImage}>
+                    <Image style={styles.image} source={profilePicture ? { uri: profilePicture } : require('../pictures/user.png')}/>
+                </TouchableOpacity>
                     <TouchableOpacity onPress={settingsPressed}>
                         <Image
                             source={require('../pictures/settings.png')}
@@ -73,33 +93,31 @@ const Profile = ({user, navigation}) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={pickImage}>
-                    <Image style={styles.image} source={profilePicture ? { uri: profilePicture } : require('../pictures/user.png')}/>
-                </TouchableOpacity>
-                <Text style={styles.titleText}>@{user.username}</Text>
+                <Text style={styles.titleText}>@{username}</Text>
             </View>
             <View style={{justifyContent: 'center', flexDirection: 'row', padding: 20, justifyContent: 'space-between'}}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={goToCreateEvent}>
                     <Text style={styles.buttonText}>Create Event</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={goToUploadPicture}>
                     <Text style={styles.buttonText}>Scan Food</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={goToSearchFriends}>
                     <Text style={styles.buttonText}>Add Friend</Text>
                 </TouchableOpacity>
             </View>
             <View >
+                <Text style={styles.bodyText}>Upcoming Events</Text>
+                <View style={styles.divider}></View>
+                
                 <Text style={styles.bodyText}>Friends</Text>
                 <View style={styles.divider}></View>
-                <Text style={styles.bodyText}>Allergies </Text>
+                
+                <Text style={styles.bodyText}>Ingredients</Text>
                 <View style={styles.divider}></View>
                 <View style={styles.ingredients}>
-                <Text style={styles.bodyText}>Ingredients</Text>
-                <TouchableOpacity style={styles.uploadBtnContainer} >
-                    <Text>Upload or take a picture of your food!</Text>
-                    <AntDesign name="camera" size={20} color="black" />
-                </TouchableOpacity>
+                
+                <Text style={styles.bodyText}>Allergies</Text>
                 <View style={styles.divider}></View>
                     {
                         /*ingredients.map((ingredient) => {
@@ -121,12 +139,12 @@ const styles = StyleSheet.create({
         width:100,
         height:60,
         backgroundColor: '#B4D196',
-        borderRadius: 10,
+        borderRadius: 12,
     },
     buttonText: {
         color:'#4D6B2E', 
         fontWeight: 'bold', 
-        fontSize: '16',
+        fontSize:  16,
         padding: 10,
         textAlign: 'center',
     },
@@ -138,25 +156,15 @@ const styles = StyleSheet.create({
     logout: {
         width: 30,
         height: 30,
-        marginHorizontal: 140,
-        marginTop: 20,
+        marginHorizontal: 90,
+        marginTop: -40,
     }, 
     settings: {
         width: 25,
         height: 25,
-        marginHorizontal: 140,
-        marginTop: 20,
+        marginHorizontal: 90,
+        marginTop: -40,
     }, 
-    uploadBtnContainer:{
-        opacity:0.7,
-        backgroundColor:'lightgrey',
-        width: 200,
-        height:200,
-        borderRadius: 6,
-        paddingTop: 15,
-        marginLeft: 95,
-        alignItems: 'center',
-    },
     divider: {
         height: 2, 
         backgroundColor: '#D6D6D6',
@@ -168,6 +176,7 @@ const styles = StyleSheet.create({
     titleText: {
       fontSize: 30,
       fontWeight: 'bold',
+      marginTop: 10,
       marginBottom: 20,
 
     },
@@ -175,17 +184,18 @@ const styles = StyleSheet.create({
         //backgroundColor: '#97E0FF',
         //backgroundColor: '#CCDDAA',
         backgroundColor: '#F3EACB',
-        height: 220,
+        height: 180,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
     image: {
+        //height: 100,
+        //width: 100,
+        marginTop: 30,
         height: 100,
         width: 100,
-        marginTop: 20,
-        marginBottom: 10,
         borderRadius: 999,
         borderWidth: 2,
         borderColor: 'black',
