@@ -8,9 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { UserContext } from '../App';
 
-const Profile = ({user, navigation}) => {
-    const users = useQuery(api.convex_functions.userList) || [];
-
+const Profile = ({navigation}) => {
     // get the username and password 
     const { userInfo } = useContext(UserContext);
     const { username, password } = userInfo;
@@ -18,8 +16,16 @@ const Profile = ({user, navigation}) => {
     console.log("password: " + password); 
 
     const [profilePicture, setProfilePicture] = useState(null);
+    
+    const users = useQuery(api.convex_functions.userList) || [];
     const ingredients = getIngredients(username, users);
     console.log(ingredients.length);
+
+    const [ingredientListEditable, setIngredientListEditable] = useState(false);
+
+    const toggleIngredientListEdit = () => {
+      setIngredientListEditable(!ingredientListEditable);
+    };
 
     const imageData = {
         inlineData: {
@@ -78,7 +84,6 @@ const Profile = ({user, navigation}) => {
         ));
       };
 
-    // style={{marginRight: 320, marginTop: 10}
     return (
         <ScrollView>
             <View style={styles.header}>
@@ -119,7 +124,12 @@ const Profile = ({user, navigation}) => {
                 <Text style={styles.bodyText}>Friends</Text>
                 <View style={styles.divider}></View>
                 
-                <Text style={styles.bodyText}>Ingredients</Text>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.bodyText}>Ingredients</Text>
+                    <TouchableOpacity onPress={toggleIngredientListEdit} style={styles.ingredientListEditButton}>
+                        <Text style={{fontSize: 16, textAlign: 'center'}}>{ingredientListEditable ? 'Done' : 'Edit'}</Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.ingredientsContainer}>
                     <ScrollView style={styles.ingredientsBox}>
                         {renderIngredients()}
@@ -135,6 +145,15 @@ const Profile = ({user, navigation}) => {
 }
 
 const styles = StyleSheet.create({
+    ingredientListEditButton: {
+        height: 35,
+        width: 60,
+        borderWidth: 2,
+        padding: 5,
+        marginTop: 10,
+        marginLeft: 120,
+        borderRadius: 12,
+      },
     ingredientsContainer: {
         height: 200,
         width: 300,
@@ -154,7 +173,6 @@ const styles = StyleSheet.create({
         paddingVertical: 7.5,
         borderBottomWidth: 1.5,
         backgroundColor: 'white',
-        //borderBottomColor: 'lightgray',
         borderBottomColor: '#E2E9ED',
       },
       ingredientText: {

@@ -32,7 +32,8 @@
     "react-native-markdown-display": "^7.0.2",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
-    "remarkable": "^2.0.1"
+    "remarkable": "^2.0.1",
+    "expo-font": "~11.10.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
