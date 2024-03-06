@@ -31,8 +31,14 @@ export function getFriends(username, users) {
 
 export function getEvents(username, users) {
     const user = users.find(user => user.username === username);
-    return user ? user.events : []; // now you can access friends by index, Ex: graceFriends[indexNumber]
+    return user ? user.events : []; // now you can access events by index, Ex: graceFriends[indexNumber]
   }
+
+export function getAllergies(username, users) {
+    const user = users.find(user => user.username === username);
+    return user ? user.allergies : []; // now you can access allergies by index, Ex: graceFriends[indexNumber]
+  }
+
 
 export const userList = query(async (ctx) => {
     return await ctx.db.query("users").collect();
