@@ -18,10 +18,8 @@ const Profile = ({user, navigation}) => {
     console.log("password: " + password); 
 
     const [profilePicture, setProfilePicture] = useState(null);
-    //const ingredients = getIngredients(user.username, users);
-    //console.log(ingredients.length);
-    // const userDB = useQuery(api.users.getUser, {username: user.username});
-    // console.log(userDB);
+    const ingredients = getIngredients(username, users);
+    console.log(ingredients.length);
 
     const imageData = {
         inlineData: {
@@ -72,6 +70,14 @@ const Profile = ({user, navigation}) => {
         navigation.navigate('search');
       };
 
+      const renderIngredients = () => {
+        return ingredients.map((ingredient, index) => (
+          <View key={index} style={styles.ingredientRow}>
+            <Text style={styles.ingredientText}>{ingredient}</Text>
+          </View>
+        ));
+      };
+
     // style={{marginRight: 320, marginTop: 10}
     return (
         <ScrollView>
@@ -114,27 +120,47 @@ const Profile = ({user, navigation}) => {
                 <View style={styles.divider}></View>
                 
                 <Text style={styles.bodyText}>Ingredients</Text>
+                <View style={styles.ingredientsContainer}>
+                    <ScrollView style={styles.ingredientsBox}>
+                        {renderIngredients()}
+                    </ScrollView>
+                </View>
                 <View style={styles.divider}></View>
-                <View style={styles.ingredients}>
                 
                 <Text style={styles.bodyText}>Allergies</Text>
                 <View style={styles.divider}></View>
-                    {
-                        /*ingredients.map((ingredient) => {
-                            return (
-                           <Pressable style={styles.ingredient}>
-                                <Text>{ingredient}</Text>
-                            </Pressable>)
-        
-                        }) */
-                    }
-                </View>
             </View>
         </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
+    ingredientsContainer: {
+        height: 200,
+        width: 300,
+        justifyContent: 'center',
+        marginBottom: 10,
+        marginHorizontal: 40,
+      },
+      ingredientsBox: {
+        flex: 1,
+        borderRadius: 12,
+      },
+    ingredientRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingVertical: 7.5,
+        borderBottomWidth: 1.5,
+        backgroundColor: 'white',
+        //borderBottomColor: 'lightgray',
+        borderBottomColor: '#E2E9ED',
+      },
+      ingredientText: {
+        fontSize: 16,
+      },
+      
     button: {
         width:100,
         height:60,
@@ -167,8 +193,10 @@ const styles = StyleSheet.create({
     }, 
     divider: {
         height: 2, 
+        width: 350,
         backgroundColor: '#D6D6D6',
         marginVertical: 10, 
+        marginHorizontal: 20,
     },
     baseText: {
       fontFamily: 'Cochin',
@@ -181,8 +209,6 @@ const styles = StyleSheet.create({
 
     },
     header: {
-        //backgroundColor: '#97E0FF',
-        //backgroundColor: '#CCDDAA',
         backgroundColor: '#F3EACB',
         height: 180,
         flex: 1,
@@ -191,8 +217,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        //height: 100,
-        //width: 100,
         marginTop: 30,
         height: 100,
         width: 100,
