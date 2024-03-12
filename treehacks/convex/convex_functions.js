@@ -24,10 +24,29 @@ export function getIngredients(username, users) {
     return user ? user.ingredients : []; // now you can access ingredients by index, Ex: graceIngredients[indexNumber]
   }
 
-export function getFriends(username, users) {
-    const user = users.find(user => user.username === username);
-    return user ? user.usernamesOfFriends : []; // now you can access friends by index, Ex: graceFriends[indexNumber]
-  }
+export const getIngredientListOfUser = query({
+    args: { username: v.string() },
+    handler: async (ctx, args) => {
+      console.log("inside getIngredientListOfUser");
+      console.log("username: " + args.username);
+      const users = await ctx.db.query("users").filter((q) => q.eq(q.field("username"), args.username)).collect();
+      console.log("users[0].username: " + users[0].username);
+      console.log("users[0].ingredients: " + users[0].ingredients);
+      return users[0].ingredients;
+    },
+  });
+
+  export const getFriendsOfUser = query({
+    args: { username: v.string() },
+    handler: async (ctx, args) => {
+      console.log("inside getFriendsOfUser");
+      console.log("username: " + args.username);
+      const users = await ctx.db.query("users").filter((q) => q.eq(q.field("username"), args.username)).collect();
+      console.log("users[0].username: " + users[0].username);
+      console.log("users[0].usernamesOfFriends: " + users[0].ingredients);
+      return users[0].usernamesOfFriends;
+    },
+  })
 
 export function getEvents(username, users) {
     const user = users.find(user => user.username === username);
@@ -39,6 +58,13 @@ export function getAllergies(username, users) {
     return user ? user.allergies : []; // now you can access allergies by index, Ex: graceFriends[indexNumber]
   }
 
+export const getUserIdByUsername = query({
+  args: { username: v.string() },
+  handler: async (ctx, args) => {
+    const users = await ctx.db.query("users").filter((q) => q.eq(q.field("username"), args.username)).collect();
+    return users[0]._id; 
+  },
+});
 
 export const userList = query(async (ctx) => {
     return await ctx.db.query("users").collect();
@@ -50,11 +76,45 @@ export const createUser = mutation({
   ingredients: v.array(v.string()), events: v.array(v.string()), usernamesOfFriends: v.array(v.string())},
   handler: async (ctx, args) => {
     console.log("username: " + args.username + ", password: " + args.password + ", emailAddress: " + args.emailAddress);
-    const taskId = await ctx.db.insert("users", { username: args.username, password: args.username, 
+    await ctx.db.insert("users", { username: args.username, password: args.password, 
       emailAddress: args.emailAddress, allergies: args.allergies, ingredients: args.ingredients, events: args.events,
     usernamesOfFriends: args.usernamesOfFriends });
-    // do something with `taskId`
   },
 });
 
 //  username: '', password: '', email: '', allergies: [], ingredients: [], events: [], usernamesOfFriends: []
+
+
+// Need to write:
+
+export const addIngredientsForUser = mutation({
+  args: { username: v.string(), newIngredients: v.array(v.string())},
+  handler: async (ctx, args) => {
+    console.log('inside addIngredientsForUser');
+    const userId = await getUserIdByUsername(ctx, { username: args.username });
+    const ingredientList = await getIngredientListOfUser(ctx, {username: args.username });
+    const newIngredientList = ingredientList.concat(args.newIngredients);
+    await ctx.db.patch(userId, { ingredients: newIngredientList});
+  },
+});
+
+// deleteUserIngredient 
+
+// modifyUserIngredient 
+
+// addUserFriend
+
+// deleteUserFriend 
+
+// addUserEvent
+
+// deleteUserEvent
+
+// addUserAllergy
+
+// deleteUserAllergy 
+
+// addUserSavedRecipe
+
+// deleteUserSavedRecipe 
+

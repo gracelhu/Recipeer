@@ -24,3 +24,82 @@
                             </Pressable>)
         
                         })  */
+
+
+
+
+                        <View style={styles.tableContainer}>
+                    <ScrollView style={styles.tableBox}>
+                        {renderIngredients()}
+                    </ScrollView>
+                </View>
+
+
+
+
+                <View style={styles.tableContainer}>
+                    <ScrollView style={styles.tableBox}>
+                        {renderFriends()}
+                    </ScrollView>
+                </View>
+
+
+
+                      const renderEvents = () => {
+        return events.map((event, index) => (
+          <View key={index} style={styles.eventRow}>
+            <Text style={styles.eventText}>{event}</Text>
+          </View>
+        ));
+      };
+
+      const renderFriends = () => {
+        return friends.map((friend, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.tableText}>{friend}</Text>
+          </View>
+        ));
+      };
+
+      const renderIngredients = () => {
+        return ingredients.map((ingredient, index) => (
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.tableText}>{ingredient}</Text>
+          </View>
+        ));
+      };
+
+
+                          <TouchableOpacity onPress={logoutPressed}>
+                        <Image
+                            source={require('../pictures/logout.svg')}
+                            style={styles.logout}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={settingsPressed}>
+                        <Image
+                            source={require('../pictures/settings.png')}
+                            style={styles.settings}
+                        />
+                    </TouchableOpacity>
+
+
+
+
+                     <TouchableOpacity style={styles.button}>
+              <Text style={styles.button} onPress={addSomeRandomIngredients}>Add some random ingredient</Text>
+            </TouchableOpacity>
+
+
+
+                        <TabView
+            navigationState={{ index, routes: [  // Define your tabs here
+            { key: 'first', title: 'Events' },
+            { key: 'second', title: 'Ingredients' },
+            { key: 'third', title: 'Friends' },
+            ] }}
+            renderScene={renderScene}
+            renderTabBar={renderTabBar}
+            onIndexChange={setIndex}
+            
+            />   

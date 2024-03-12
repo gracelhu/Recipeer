@@ -1,12 +1,12 @@
-import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, TouchableOpacity} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, TouchableOpacity, Dimensions} from 'react-native';
 import {React, useState, useContext} from 'react';
-import { useQuery } from "convex/react";
+import { useQuery, useMutation} from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getEvents, getFriends, getIngredients, getAllergies } from '../convex/convex_functions';
-import { AntDesign } from '@expo/vector-icons';
+import { getEvents, getAllergies } from '../convex/convex_functions';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { UserContext } from '../App';
+import { TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
 const Profile = ({navigation}) => {
     // get the username and password 
@@ -19,9 +19,14 @@ const Profile = ({navigation}) => {
     
     const users = useQuery(api.convex_functions.userList) || [];
     const events = getEvents(username, users);
-    const friends = getFriends(username, users);
-    const ingredients = getIngredients(username, users);
+    const friends = useQuery(api.convex_functions.getFriendsOfUser, {username: 'G'}) || [];
+    const ingredients = useQuery(api.convex_functions.getIngredientListOfUser, {username: 'G'}) || [];
+    console.log('ingredients: ' + ingredients); 
+
     const allergies = getAllergies(username, users);
+
+    const userID = useQuery(api.convex_functions.getUserIdByUsername, {username: 'G'});
+    console.log("userID: " + userID);
 
     const [eventListEditable, setEventListEditable] = useState(false);
     const [friendListEditable, setFriendListEditable] = useState(false);
@@ -87,122 +92,119 @@ const Profile = ({navigation}) => {
       };
 
       const goToUploadPicture = async() => {
-        navigation.navigate('upload');
+        navigation.navigate('upload_notsetup');
       };
 
       const goToSearchFriends = async() => {
         navigation.navigate('search');
       };
 
-      const renderEvents = () => {
-        return events.map((event, index) => (
-          <View key={index} style={styles.eventRow}>
-            <Text style={styles.eventText}>{event}</Text>
-          </View>
-        ));
-      };
 
-      const renderFriends = () => {
-        return friends.map((friend, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableText}>{friend}</Text>
-          </View>
-        ));
-      };
+      const renderTable = (tableElements) => {
+        const tableHeight = tableElements.length > 6 ? 200 : tableElements.length * 35;
+        return (
+          <View style={{height: tableHeight, width: 300, justifyContent: 'center', marginBottom: 10, marginHorizontal: 40}}>
+                <ScrollView style={styles.tableBox}>
+                    {tableElements.map((tableElement, index) => (
+                        <View key={index} style={styles.tableRow}>
+                          <Text style={styles.tableText}>{tableElement}</Text>
+                        </View>
+                      ))}
+                </ScrollView>
+            </View>
+        );
+      }
+      
+      const newIngredients = useMutation(api.convex_functions.addIngredientsForUser);
+      const addSomeRandomIngredients = async() => {
+        await newIngredients({ username: 'G', newIngredients: ['newingredient', 'yo']});
+      }
 
-      const renderIngredients = () => {
-        return ingredients.map((ingredient, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableText}>{ingredient}</Text>
-          </View>
-        ));
-      };
+      const Events = () => (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
+          <Text style={styles.bodyText}>Upcoming Events</Text>
+        </View>
+      );
+      
+      const Ingredients = () => (
+        <View>
+           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
+              <View style={{flexDirection:'row'}}>
+                    <Text style={styles.bodyText}>Ingredients</Text>
+                    <TouchableOpacity onPress={toggleIngredientListEdit} style={styles.tableEditButton}>
+                        <Text style={{fontSize: 16, textAlign: 'center'}}>{ingredientListEditable ? 'Done' : 'Edit'}</Text>
+                    </TouchableOpacity>
+              </View>
+              {renderTable(ingredients)}
+            </View>
+        </View>
+      );
 
-      const renderAllergies = () => {
-        return allergies.map((allergy, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableText}>{allergy}</Text>
-          </View>
-        ));
-      };
+      const Friends = () => (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{flexDirection:'row'}}>
+              <Text style={styles.bodyText}>Friends</Text>
+                <TouchableOpacity onPress={toggleFriendListEdit} style={styles.tableEditButton}>
+                  <Text style={{fontSize: 16, textAlign: 'center'}}>{friendListEditable ? 'Done' : 'Edit'}</Text>
+                </TouchableOpacity>
+            </View>
+            {renderTable(friends)}
+        </View>
+      );
+      
+      const [index, setIndex] = useState(0);
+      
+  const renderTabBar = (props) => (
+    <TabBar {...props} style={{backgroundColor: 'black'}}/>
+  );
+  
+  const [routes] = useState([
+    { key: 'first', title: 'Events' },
+    { key: 'second', title: 'Ingredients' },
+    { key: 'third', title: 'Friends' },
+  ]);
+
+  const renderScene = SceneMap({
+    first: Events,
+    second: Ingredients,
+    third: Friends,
+  });
 
     return (
         <ScrollView>
             <View style={styles.header}>
                 <View style={styles.topBar}>
-                    <TouchableOpacity onPress={logoutPressed}>
-                        <Image
-                            source={require('../pictures/logout.png')}
-                            style={styles.logout}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={pickImage}>
-                    <Image style={styles.image} source={profilePicture ? { uri: profilePicture } : require('../pictures/default-profile-pic.jpg')}/>
-                </TouchableOpacity>
-                    <TouchableOpacity onPress={settingsPressed}>
-                        <Image
-                            source={require('../pictures/settings.png')}
-                            style={styles.settings}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <Text style={styles.titleText}>@{username}</Text>
-            </View>
-            <View style={styles.topBarDivider}></View>
-            <View style={{justifyContent: 'center', flexDirection: 'row', padding: 20, justifyContent: 'space-between'}}>
-                <TouchableOpacity style={styles.button} onPress={goToCreateEvent}>
-                    <Text style={styles.buttonText}>Create Event</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={goToUploadPicture}>
-                    <Text style={styles.buttonText}>Scan Food</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={goToSearchFriends}>
-                    <Text style={styles.buttonText}>Add Friend</Text>
-                </TouchableOpacity>
-            </View>
-            <View >
-                <Text style={styles.bodyText}>Upcoming Events</Text>
-                <View style={styles.divider}></View>
-                
-                <View style={{flexDirection:'row'}}>
-                    <Text style={styles.bodyText}>Friends</Text>
-                    <TouchableOpacity onPress={toggleFriendListEdit} style={styles.tableEditButton}>
-                        <Text style={{fontSize: 16, textAlign: 'center'}}>{friendListEditable ? 'Done' : 'Edit'}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.tableContainer}>
-                    <ScrollView style={styles.tableBox}>
-                        {renderFriends()}
-                    </ScrollView>
-                </View>
-                <View style={styles.divider}></View>
-                
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.bodyText}>Ingredients</Text>
-                    <TouchableOpacity onPress={toggleIngredientListEdit} style={styles.tableEditButton}>
-                        <Text style={{fontSize: 16, textAlign: 'center'}}>{ingredientListEditable ? 'Done' : 'Edit'}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.tableContainer}>
-                    <ScrollView style={styles.tableBox}>
-                        {renderIngredients()}
-                    </ScrollView>
-                </View>
-                <View style={styles.divider}></View>
-                
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.bodyText}>Allergies</Text>
-                    <TouchableOpacity onPress={toggleAllergyListEdit} style={styles.tableEditButton}>
-                        <Text style={{fontSize: 16, textAlign: 'center'}}>{allergyListEditable ? 'Done' : 'Edit'}</Text>
-                    </TouchableOpacity>
-                </View>
-                    <View style={styles.tableContainer}>
-                        <ScrollView style={styles.tableBox}>
-                            {renderAllergies()}
-                        </ScrollView>
+                    <View style={{justifyContent: 'center'}}>
+                      <TouchableOpacity onPress={pickImage}>
+                        <Image style={styles.image} source={profilePicture ? { uri: profilePicture } : require('../pictures/user.png')}/>
+                      </TouchableOpacity>
+                    <Text style={styles.titleText}>@gracelhu</Text>
                     </View>
-                <View style={styles.divider}></View>
+                    <View style={{justifyContent: 'center', flexDirection: 'column', padding: 20, justifyContent: 'space-between', marginLeft: 40}}>
+                      <TouchableOpacity style={styles.button} onPress={goToCreateEvent}>
+                        <Text style={styles.buttonText}>Create Event</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={goToUploadPicture}>
+                        <Text style={styles.buttonText}>Scan Food</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={goToSearchFriends}>
+                        <Text style={styles.buttonText}>Add Friend</Text>
+                      </TouchableOpacity>
+                    </View>
+                </View>
             </View>
+            <View style={styles.divider}></View>
+            <TabView
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              renderTabBar={renderTabBar}
+              initialLayout={{ width: Dimensions.get('window').width }}
+            />
+            {/* Render individual components based on active tab */}
+            {index === 0 && <Events />}
+            {index === 1 && <Ingredients />}
+            {index === 2 && <Friends />}
         </ScrollView>
     )
 }
@@ -227,6 +229,8 @@ const styles = StyleSheet.create({
     tableBox: {
         flex: 1,
         borderRadius: 12,
+        borderWidth: 1.5,
+        borderColor: 'black',
       },
     tableRow: {
         flexDirection: 'row',
@@ -236,29 +240,31 @@ const styles = StyleSheet.create({
         paddingVertical: 7.5,
         borderBottomWidth: 1.5,
         backgroundColor: 'white',
-        borderBottomColor: '#E2E9ED',
+        //borderBottomColor: '#E2E9ED',
+        borderBottomColor: 'black',
       },
     tableText: {
         fontSize: 16,
+        color: 'black',
       },
       
     button: {
         display:'flex',
         justifyContent:'center',
-        width:90,
-        height:55,
-        //backgroundColor: '#B4D196',
+        width:110,
+        height:40,
         borderRadius: 12,
-        borderWidth: 2,
-        //borderColor: '#4D6B2E',
+        margin: 10,
+        //backgroundColor: '#8E59FF',
+        //backgroundColor: '#74CB74',
+        backgroundColor: '#52B15E',
 
     },
     buttonText: {
-        //color:'#4D6B2E', 
-        //fontWeight: 'bold', 
-        fontSize: 16,
+        fontSize: 15.5,
         padding: 5,
         textAlign: 'center',
+        color: 'white',
     },
     topBar: {
         flexDirection: 'row',
@@ -270,6 +276,7 @@ const styles = StyleSheet.create({
         height: 30,
         marginHorizontal: 90,
         marginTop: -40,
+        color: 'black',
     }, 
     settings: {
         width: 25,
@@ -281,7 +288,6 @@ const styles = StyleSheet.create({
         height: 1.5, 
         width: 350,
         backgroundColor: '#D6D6D6',
-        marginVertical: 10, 
         marginHorizontal: 20,
     },
     topBarDivider: {
@@ -290,62 +296,44 @@ const styles = StyleSheet.create({
     },
     baseText: {
       fontFamily: 'Cochin',
+      color: 'white',
     },
     titleText: {
       fontSize: 27,
-      fontWeight: 'bold',
+      //fontWeight: 'bold',
       marginTop: 10,
       marginBottom: 20,
+      marginLeft: 10,
+      color: 'white',
 
     },
     header: {
-        //backgroundColor: '#F3EACB',
-        //backgroundColor: '#D2E8D7',
-        backgroundColor: '#DDECDF',
-        height: 180,
+        //backgroundColor: '#C0CD87',
+        backgroundColor: '#040B1B',
+        height: 230,
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
     },
     image: {
-        marginTop: 30,
-        height: 100,
-        width: 100,
+        marginTop: 50,
+        marginLeft: 10,
+        height: 130,
+        width: 130,
         borderRadius: 999,
         borderWidth: 2,
-        borderColor: 'black',
-    },
-    ingredient: {
-      backgroundColor: '#B9EBFF',
-      fontSize: 20,
-      borderRadius: 5,
-      fontSize: 20,
-      height: 30,
-      width: 70,
-      paddingLeft: 4,
-      paddingTop: 5,
-
+        //borderColor: 'black',
+        //borderColor: '#D4B4FF',
+        borderColor: 'white',
+        //box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); /* Soft black shadow */
+        
     },
     bodyText: {
-        fontSize: 21,
+        fontSize: 25,
         fontWeight: 'bold',
         padding: 20,
     },
-    ingredients: {
-        paddingLeft: 10,
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        gap: 8,
-    },
-    friends: {
-         color: 'blue',
-         fontSize: 20,
-         paddingLeft: 15,
-    }
   });
 
 

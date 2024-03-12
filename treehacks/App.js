@@ -6,7 +6,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomNavigation from './navigator/BottomNavigation';
 import Login from './screens/Login';
 import Signup from './screens/Signup';
-import UploadPic from './screens/UploadPic';
+import UploadPic_Setup from './screens/UploadPic_Setup';
+import UploadPic_NotSetup from './screens/UploadPic_NotSetup';
 import CreateEvent from './screens/CreateEvent';
 import Events from './screens/Events';
 import Recipes from './screens/Recipes';
@@ -15,8 +16,6 @@ import "react-native-get-random-values";
 import { CONVEX_URL } from "@env";
 import Settings from './screens/Settings';
 import Search from './screens/Search';
-
-
 
 
 const convex = new ConvexReactClient(CONVEX_URL, {
@@ -42,8 +41,11 @@ export default function App() {
             {(props) => <Signup {...props}/>}
           </Stack.Screen>
           <Stack.Screen name="upload">
-              {(props) => <UploadPic {...props}/>}
+              {(props) => <UploadPic_Setup {...props}/>}
             </Stack.Screen> 
+          <Stack.Screen name="upload_notsetup">
+              {(props) => <UploadPic_NotSetup {...props}/>}
+          </Stack.Screen> 
           <Stack.Screen name="dashboard">
             {(props) => <BottomNavigation {...props}/>  }
             </Stack.Screen> 
