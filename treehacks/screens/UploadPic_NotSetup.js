@@ -6,8 +6,6 @@ import * as FileSystem from 'expo-file-system';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import { useMutation} from 'convex/react';
 import { api } from "../convex/_generated/api";
-import { useNavigation } from '@react-navigation/native';
-import { createUser } from '../convex/convex_functions';
 
 const MODEL_NAME = "gemini-1.0-pro";
 const API_KEY = "AIzaSyA6sN0PxKyoAfo58e4Kgt6WYMZL6f7CDQc";
@@ -28,9 +26,9 @@ export default function UploadPic({ navigation, user }) {
       },
     };
 
-    const processImage = useMutation(api.convex_functions.createUser);
     let response = ["first"];
 
+    const addIngredientsForUser = useMutation(api.convex_functions.addIngredientsForUser);
 
 
   const addImage = async () => {
@@ -54,7 +52,7 @@ export default function UploadPic({ navigation, user }) {
         console.log(response);
      
         try {
-            await processImage({ ...user, ingredients: response });
+            await addIngredientsForUser({username: 'G', newIngredients: response})
             console.log('Image processed and database updated.');
             navigation.navigate('dashboard');
           } catch (error) {
@@ -79,6 +77,7 @@ export default function UploadPic({ navigation, user }) {
     console.log(rawresponse);
 
     response = rawresponse.split(',');
+    console.log(response);
   };
 
  
@@ -86,7 +85,7 @@ export default function UploadPic({ navigation, user }) {
   return (
     // This is the component part of the image uploader
     // {flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',}
-    <View style= {{flex: 1, backgroundColor: '#040B1B',}}>
+    <View style= {{flex: 1}}>
       <View style = {arrowStyles.topBar}>
       <TouchableOpacity onPress={leftArrowPressed}>
         <Image
@@ -148,7 +147,6 @@ const imageUploaderStyles=StyleSheet.create({
         paddingLeft: 16,
         paddingRight: 16,
         marginBottom: 30,
-        color: 'white',
         textAlign: 'center',
         lineHeight: 30,
       },
@@ -163,8 +161,8 @@ const imageUploaderStyles=StyleSheet.create({
     },
     uploadBtnContainer:{
         opacity:0.7,
-        //backgroundColor:'lightgrey',
-        backgroundColor: '#F0E6ED',
+        backgroundColor:'lightgrey',
+        //backgroundColor: '#F0E6ED',
         width: 200,
         height:200,
         borderRadius: 6,

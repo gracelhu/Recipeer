@@ -1,7 +1,6 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import {React, useState, FormEvent} from 'react';
 import { Formik } from 'formik'; 
-//import { useMutation, useQuery } from "convex/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { usernameAndPasswordExists, emailExists } from "../convex/convex_functions"

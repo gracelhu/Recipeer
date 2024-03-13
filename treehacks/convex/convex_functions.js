@@ -48,6 +48,18 @@ export const getIngredientListOfUser = query({
     },
   })
 
+  export const getEventsOfUser = query({
+    args: { username: v.string() },
+    handler: async (ctx, args) => {
+      console.log("inside getEventsOfUser");
+      console.log("username: " + args.username);
+      const users = await ctx.db.query("users").filter((q) => q.eq(q.field("username"), args.username)).collect();
+      console.log("users[0].username: " + users[0].username);
+      console.log("users[0].usernamesOfFriends: " + users[0].events);
+      return users[0].events;
+    },
+  })
+
 export function getEvents(username, users) {
     const user = users.find(user => user.username === username);
     return user ? user.events : []; // now you can access events by index, Ex: graceFriends[indexNumber]
@@ -95,6 +107,18 @@ export const addIngredientsForUser = mutation({
     const ingredientList = await getIngredientListOfUser(ctx, {username: args.username });
     const newIngredientList = ingredientList.concat(args.newIngredients);
     await ctx.db.patch(userId, { ingredients: newIngredientList});
+  },
+});
+
+// event format: [name, date, time, friends invited, dishes, ingredients needed]
+export const addEventForUser = mutation({
+  args: { username: v.string(), newEvent: v.array(v.array(v.any()))},
+  handler: async (ctx, args) => {
+    console.log('inside addEventForUser');
+    const userId = await getUserIdByUsername(ctx, { username: args.username });
+    const eventList = await getEventsOfUser(ctx, {username: args.username });
+    const newEventList = eventList.concat(args.newEvent);
+    await ctx.db.patch(userId, { events: newEventList });
   },
 });
 

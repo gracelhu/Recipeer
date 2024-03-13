@@ -2,7 +2,7 @@ import { View, Text, ScrollView, StyleSheet, Image, Button, Pressable, Touchable
 import {React, useState, useContext} from 'react';
 import { useQuery, useMutation} from "convex/react";
 import { api } from "../convex/_generated/api";
-import { getEvents, getAllergies } from '../convex/convex_functions';
+import { getEvents} from '../convex/convex_functions';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { UserContext } from '../App';
@@ -23,15 +23,12 @@ const Profile = ({navigation}) => {
     const ingredients = useQuery(api.convex_functions.getIngredientListOfUser, {username: 'G'}) || [];
     console.log('ingredients: ' + ingredients); 
 
-    const allergies = getAllergies(username, users);
-
     const userID = useQuery(api.convex_functions.getUserIdByUsername, {username: 'G'});
     console.log("userID: " + userID);
 
     const [eventListEditable, setEventListEditable] = useState(false);
     const [friendListEditable, setFriendListEditable] = useState(false);
     const [ingredientListEditable, setIngredientListEditable] = useState(false);
-    const [allergyListEditable, setAllergyListEditable] = useState(false);
 
     const toggleEventListEdit = () => {
         setEventListEditable(!eventListEditable);
@@ -44,11 +41,6 @@ const Profile = ({navigation}) => {
     const toggleIngredientListEdit = () => {
       setIngredientListEditable(!ingredientListEditable);
     };
-
-    const toggleAllergyListEdit = () => {
-        setAllergyListEditable(!allergyListEditable);
-    };
-
 
     const imageData = {
         inlineData: {
@@ -114,15 +106,16 @@ const Profile = ({navigation}) => {
             </View>
         );
       }
-      
-      const newIngredients = useMutation(api.convex_functions.addIngredientsForUser);
-      const addSomeRandomIngredients = async() => {
-        await newIngredients({ username: 'G', newIngredients: ['newingredient', 'yo']});
-      }
 
       const Events = () => (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-          <Text style={styles.bodyText}>Upcoming Events</Text>
+          <View style={{flexDirection:'row'}}>
+            <Text style={styles.bodyText}>Upcoming Events</Text>
+            <TouchableOpacity onPress={toggleEventListEdit} style={styles.tableEditButton}>
+                        <Text style={{fontSize: 16, textAlign: 'center'}}>{eventListEditable ? 'Done' : 'Edit'}</Text>
+            </TouchableOpacity>
+          </View>
+          {renderTable(events)}
         </View>
       );
       
@@ -193,7 +186,6 @@ const Profile = ({navigation}) => {
                     </View>
                 </View>
             </View>
-            <View style={styles.divider}></View>
             <TabView
               navigationState={{ index, routes }}
               renderScene={renderScene}
@@ -300,16 +292,15 @@ const styles = StyleSheet.create({
     },
     titleText: {
       fontSize: 27,
-      //fontWeight: 'bold',
+      fontWeight: 'bold',
       marginTop: 10,
       marginBottom: 20,
       marginLeft: 10,
-      color: 'white',
-
     },
     header: {
         //backgroundColor: '#C0CD87',
-        backgroundColor: '#040B1B',
+        //backgroundColor: '#040B1B',
+        backgroundColor: '#FAE2A5',
         height: 230,
         flex: 1,
         flexDirection: 'column',
@@ -322,12 +313,7 @@ const styles = StyleSheet.create({
         height: 130,
         width: 130,
         borderRadius: 999,
-        borderWidth: 2,
-        //borderColor: 'black',
-        //borderColor: '#D4B4FF',
-        borderColor: 'white',
-        //box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); /* Soft black shadow */
-        
+        borderWidth: 3,
     },
     bodyText: {
         fontSize: 25,

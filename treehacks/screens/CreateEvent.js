@@ -1,33 +1,16 @@
-import { View, Text, Button , StyleSheet, TextInput , Pressable, TouchableOpacity, Image } from 'react-native'
+import { View, Text, Button , StyleSheet, TextInput, Pressable, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import RadioButtonImage from './RadioButtonImage';
-
-function handleSubmit() {
-    console.log("hi");
-}
 
 const isValid = true;
 
 const CreateEvent = ({navigation}) => {
-  const [usertheme, setUserTheme] = useState(null);
-
-  const [selectedChoice, setSelectedChoice] = useState(null);
-  const handleSelect = (value) => setSelectedChoice(value);
-
-  const setDate = (event, date) => {
-    console.log(date);
-    const type = event.type;
-    const timestamp = event.nativeEvent.timestamp;
-    const utcOffset = event.nativeEvent.utcOffset;
-  };
-
-  const setTime = (event, time) => {
-    console.log(time);
-    const type = event.type;
-    const timestamp = event.nativeEvent.timestamp;
-    const utcOffset = event.nativeEvent.utcOffset;
-  };
+  const [eventName, setEventName] = useState('');
+  const [eventDate, setEventDate] = useState('');
+  const [eventTime, setEventTime] = useState('');
+  const [friendsInvited, setFriendsInvited] = useState('');
+  const [dishes, setDishes] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [extraNotes, setExtraNotes] = useState('');
 
   const leftArrowPressed = async () => {
     console.log('Left arrow pressed');
@@ -43,48 +26,22 @@ const CreateEvent = ({navigation}) => {
           style={arrowStyles.arrowButton}
         />
         </TouchableOpacity>
-        <Text style={imageUploaderStyles.header}>Schedule Event!</Text>
-        <Text style={imageUploaderStyles.select_time}>Select time:</Text>
-      <Text style={imageUploaderStyles.datePicker}>
-        <DateTimePicker onChange={setDate} mode="date" value={new Date()} />
-        <DateTimePicker onChange={setTime} mode="time" value={new Date()} />
-        
-      </Text>
-      <Text style={imageUploaderStyles.invite_friends}>Invite friends:</Text>
-      <RadioButtonImage
-        imageUrl={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYscfUBUbqwGd_DHVhG-ZjCOD7MUpxp4uhNe7toUg4ug&s"}
-        selectedValue={selectedChoice}
-        onPress={handleSelect}
-        imageStyle={{ top:180, left:70, width: 50, height: 50, marginLeft: 10 }}/>
-        <RadioButtonImage
-        imageUrl={"https://www.alleycat.org/wp-content/uploads/2019/03/FELV-cat.jpg"}
-        selectedValue={selectedChoice}
-        onPress={handleSelect}
-        imageStyle={{ top:130, left:130, width: 50, height: 50, marginLeft: 10 }}/>
-        <RadioButtonImage
-        imageUrl={"https://www.heart.org/-/media/AHA/H4GM/Article-Images/healthy-cooking.jpg"}
-        selectedValue={selectedChoice}
-        onPress={handleSelect}
-        imageStyle={{ top:80, left:190, width: 50, height: 50, marginLeft: 10 }}/>
-        <RadioButtonImage
-        imageUrl={"https://i.etsystatic.com/7384205/r/il/f2b375/3859193465/il_fullxfull.3859193465_nlby.jpg"}
-        selectedValue={selectedChoice}
-        onPress={handleSelect}
-        imageStyle={{ top:30, left:250, width: 50, height: 50, marginLeft: 10 }}/>
-
-      <Text style={imageUploaderStyles.get_theme}>Select theme:</Text>
-      <TextInput
-        // onChangeText={setUserTheme()}
-        // value={values.password}
-        // secureTextEntry={true}
-        style={imageUploaderStyles.themeInput}
-        placeholder={"Enter theme here"}
-    />
-    
-    <Pressable style={imageUploaderStyles.buttonStyle} onPress={() => {
-      navigation.navigate("recipes"); }} disabled={!isValid}>
-                            <Text style={imageUploaderStyles.buttonText}>Submit Event</Text>
-                        </Pressable>
+        <View style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+          <Text style={styles.header}>Create an Event!</Text>
+          <TextInput onChangeText={text => setEventName(text)} style={[styles.input, {height: 45, width: 250}]} placeholder={"Event name (Ex: Taco Tuesday)"} />
+          <View style={{flexDirection: 'row'}}>
+            <TextInput onChangeText={text => setEventDate(text)} style={[styles.input, {height: 45, width: 150}]} placeholder={"mm/dd/yyyy"} />
+            <TextInput onChangeText={text => setEventTime(text)} style={[styles.input, {height: 45, width: 150}]} placeholder={"Time (Ex: 6:00 pm)"} />
+          </View>
+          <TextInput onChangeText={text => setFriendsInvited(text)} style={[styles.input, {height: 45, width: 250}]} placeholder={"Friends Invited"} />
+          <TextInput onChangeText={text => setDishes(text)} style={[styles.input, {height: 45, width: 250}]} placeholder={"Dishes"} />
+          <TextInput onChangeText={text => setIngredients(text)} style={[styles.input, {height: 90, width: 250}]} placeholder={"Ingredients needed"} />
+          <TextInput onChangeText={text => setExtraNotes(text)} style={[styles.input, {height: 90, width: 250}]} placeholder={"extra notes"} />
+          <Pressable style={styles.buttonStyle} onPress={() => {
+            navigation.navigate("recipes"); }} disabled={!isValid}>
+              <Text style={styles.buttonText}>Submit Event</Text>
+          </Pressable>
+        </View>
     </View>
   );
 };
@@ -99,15 +56,29 @@ const arrowStyles = StyleSheet.create({
   },
 })
 
-const imageUploaderStyles=StyleSheet.create({
+const styles = StyleSheet.create({
+    input: {
+      borderRadius: 5,
+      borderColor: 'gray',
+      borderWidth: 1,
+      margin: 10,
+      paddingHorizontal: 10,
+    },
+    extranotes: {
+      borderRadius: 5,
+      borderColor: 'gray',
+      borderWidth: 1,
+      width: 250,
+      height: 100,
+      margin: 10,
+      paddingHorizontal: 10,
+    },
     buttonStyle: {
         width: 200,
         paddingVertical: 15,
         backgroundColor: '#a8b956',
         borderRadius: 5,
-        top: 120,
-        left: 85,
-        paddingLeft: 10,
+        margin: 20,
     },
     buttonText: {
         fontSize: 25,
@@ -121,40 +92,9 @@ const imageUploaderStyles=StyleSheet.create({
     header:{
         fontSize: 35,
         fontWeight: 'bold',
-        top: 80,
-        left: 60,
-
+        padding: 40,
+        textAlign: 'center',
     },
-    select_time:{
-        fontSize: 25,
-        // fontWeight: 'bold',
-        top: 90,
-        left: 120,
-    },
-    invite_friends:{
-        fontSize: 25,
-        // fontWeight: 'bold',
-        top: 140,
-        left: 115,
-    },
-    get_theme:{
-        fontSize: 25,
-        // fontWeight: 'bold',
-        top: 50,
-        left: 110,
-    },
-      datePicker: {
-        fontSize: 35,
-        fontWeight: 'bold',
-        top: 110,
-        left: 60,
-      },
-      themeInput: {
-        fontSize: 20,
-        // fontWeight: 'bold',
-        top: 80,
-        left: 110,
-      },
 })
 
 
